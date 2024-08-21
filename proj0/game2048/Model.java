@@ -138,6 +138,14 @@ public class Model extends Observable {
      * */
     public static boolean emptySpaceExists(Board b) {
         // TODO: Fill in this function.
+        for(int i =0;i<b.size();i++){
+            for(int j =0;j<b.size();j++){
+                Tile check=b.tile(i,j);
+                if(check ==null){
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -148,6 +156,14 @@ public class Model extends Observable {
      */
     public static boolean maxTileExists(Board b) {
         // TODO: Fill in this function.
+        for(int i =0;i<b.size();i++){
+            for(int j =0;j<b.size();j++){
+                Tile check=b.tile(i,j);
+                if(check !=null &&check.value()==MAX_PIECE){
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -159,10 +175,31 @@ public class Model extends Observable {
      */
     public static boolean atLeastOneMoveExists(Board b) {
         // TODO: Fill in this function.
+        if(maxTileExists(b)) return true;
+        if(emptySpaceExists(b)) return true;
+        for(int i =0;i<b.size();i++){
+            for(int j =0;j<b.size();j++){
+                Tile check=b.tile(i,j);
+                Tile[] nexts=new Tile[]{
+                        Tile.create(0,i+1,j),
+                        Tile.create(0,i-1,j),
+                        Tile.create(0,i,j+1),
+                        Tile.create(0,i,j-1),
+                };
+                for (Tile next:nexts) {
+                    if(next.row()>=b.size() || next.row()<0|| next.col()>=b.size() || next.col()<0)
+                        next=null;
+                    if(next!=null){
+                        Tile tile=b.tile(next.col(),next.row());
+                        if(tile.value()==check.value()){
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
         return false;
     }
-
-
     @Override
      /** Returns the model as a string, used for debugging. */
     public String toString() {
