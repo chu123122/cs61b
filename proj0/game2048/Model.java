@@ -3,6 +3,8 @@ package game2048;
 import java.util.Formatter;
 import java.util.Observable;
 
+import static java.lang.Math.min;
+
 
 /** The state of a game of 2048.
  *  @author TODO: YOUR NAME HERE
@@ -113,12 +115,109 @@ public class Model extends Observable {
         // TODO: Modify this.board (and perhaps this.score) to account
         // for the tilt to the Side SIDE. If the board changed, set the
         // changed local variable to true.
-
+        board.setViewingPerspective(side);
+        for(int col=0;col<board.size();col++){
+            changed=(RowTileMove(col)||changed);
+        }
+        board.setViewingPerspective(Side.NORTH);
         checkGameOver();
         if (changed) {
             setChanged();
         }
+
         return changed;
+    }
+
+    private boolean RowTileMove(int col){
+        boolean changed=false;
+        for(int row= board.size()-2;row>=0;row--){
+            Tile self=board.tile(col,row);
+            if(self==null) continue;
+            int check_row=row;
+
+            boolean nextIsEmpty=CheckNextIsEmpty(col,check_row+1);
+            if (!nextIsEmpty){
+                boolean nextHaveSameValue=CheckNextHaveSameValue(col,check_row+1,self);
+                if(nextHaveSameValue){
+                    TileMoveAndAddScore(col,check_row+1,self);
+                    changed=true;
+                }else{
+                    changed=false;
+                }
+                continue;
+            }
+
+            while(nextIsEmpty){
+                if(check_row>=board.size()-2){
+                    nextIsEmpty=CheckNextIsEmpty(col,check_row+1);
+                    break;
+                }else{
+                    check_row++;
+                    nextIsEmpty=CheckNextIsEmpty(col,check_row+1);
+                }
+            }
+            if(nextIsEmpty){
+                TileMoveAndAddScore(col,check_row+1,self);
+            }else{
+                boolean nextHaveSameValue=CheckNextHaveSameValue(col,check_row+1,self);
+                if(nextHaveSameValue) check_row++;
+                TileMoveAndAddScore(col,check_row,self);
+            }
+            changed=true;
+        }
+        return changed;
+    }
+//    private boolean TileMove(Tile self){
+//        int check_row=self.row();
+//        int col=self.col();
+//        boolean nextIsEmpty=CheckNextIsEmpty(col,check_row+1);
+//        if (!nextIsEmpty){
+//            boolean nextHaveSameValue=CheckNextHaveSameValue(col,check_row+1,self);
+//            if(nextHaveSameValue){
+//                TileMoveAndAddScore(col,check_row+1,self);
+//                return true;
+//            }else{
+//                return false;
+//            }
+//        }
+//
+//        while(nextIsEmpty){
+//            if(check_row>=board.size()-2){
+//                nextIsEmpty=CheckNextIsEmpty(col,check_row+1);
+//                break;
+//            }else{
+//                check_row++;
+//                nextIsEmpty=CheckNextIsEmpty(col,check_row+1);
+//            }
+//        }
+//        if(nextIsEmpty){
+//            TileMoveAndAddScore(col,check_row+1,self);
+//        }else{
+//            boolean nextHaveSameValue=CheckNextHaveSameValue(col,check_row+1,self);
+//            if(nextHaveSameValue) check_row++;
+//            TileMoveAndAddScore(col,check_row,self);
+//        }
+//        return true;
+//    }
+    private int  col_haveCom=-1;
+    private int  row_haveCom=-1;
+    private void TileMoveAndAddScore(int col,int row,Tile self){
+        if(col_haveCom==col &&row_haveCom==row){
+            board.move(col,row-1,self);
+            return;
+        }
+        if(board.move(col,row,self)){
+            score+=board.tile(col,row).value();
+            col_haveCom=col;
+            row_haveCom=row;
+        }
+
+    }
+    private boolean CheckNextIsEmpty(int col,int row){
+        return board.tile(col,row)==null;
+    }
+    private boolean CheckNextHaveSameValue(int col,int row,Tile self){
+        return board.tile(col,row).value()==self.value();
     }
 
     /** Checks if the game is over and sets the gameOver variable
