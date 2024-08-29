@@ -34,7 +34,7 @@ public class TestBuggyAList {
                 int last=L.getLast();
                 int last1= T.getLast();
                 Assert.assertEquals(last,last1);
-            } else if (operationNumber==4) {
+            } else if (operationNumber==3) {
                 //removeLast
                 if(L.size()==0)continue;
                 int last=L.removeLast();
