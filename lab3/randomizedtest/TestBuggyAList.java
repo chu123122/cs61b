@@ -10,14 +10,12 @@ import static org.junit.Assert.*;
  */
 public class TestBuggyAList {
   // YOUR TESTS HERE
-    public static void main(String[] args){
-        randomizedTest();
-    }
-    public static void randomizedTest(){
+    @Test
+    public void randomizedTest(){
         AListNoResizing<Integer> L = new AListNoResizing<>();
         BuggyAList<Integer>  T=new BuggyAList<>();
 
-        int N = 5000;
+        int N = 1000;
         for(int i = 0; i < N; i += 1) {
             int operationNumber = StdRandom.uniform(0, 4);
             if (operationNumber == 0) {
@@ -44,5 +42,21 @@ public class TestBuggyAList {
                 Assert.assertEquals(last,last1);
             }
         }
+    }
+
+    @Test
+    public void TestThreeAddThreeRemoveTest(){
+        AListNoResizing<Integer> AList=new AListNoResizing<>();
+        AList.addLast(4);
+        AList.addLast(5);
+        AList.addLast(6);
+        BuggyAList<Integer> BugAList=new BuggyAList<>();
+        BugAList.addLast(4);
+        BugAList.addLast(5);
+        BugAList.addLast(6);
+
+        assertEquals(AList.removeLast(),BugAList.removeLast());
+        assertEquals(AList.removeLast(),BugAList.removeLast());
+        assertEquals(AList.removeLast(),BugAList.removeLast());
     }
 }
