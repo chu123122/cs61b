@@ -34,12 +34,14 @@ public class LinkedListDeque<T> {
         size++;
     }
     public T removeFirst(){
+        if(size==0)return null;
         LLD<T> remove=FrontSentinel.next;
         linkTwoList(FrontSentinel,remove.next);
         size--;
         return remove.value;
     }
     public T removeLast(){
+        if(size==0)return null;
         LLD<T> remove=BackSentinel.prev;
         linkTwoList(remove.prev,BackSentinel);
         size--;
@@ -78,7 +80,7 @@ public class LinkedListDeque<T> {
         twice.prev=first;
     }
 
-     class LLD<Item>{
+     private class LLD<Item>{
         public Item value;
         public LLD<Item> prev;
         public LLD<Item> next;
