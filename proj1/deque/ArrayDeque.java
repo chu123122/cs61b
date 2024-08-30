@@ -39,37 +39,38 @@ public class ArrayDeque<Item>{
         if(size==0) return null;
         if (size<=items.length/4&&size>=8) ResizeArgsSmaller();
         int removeNumber=switchNumber(nextFirst+1);
-        if(outOfRange(removeNumber))return null;
 
         Item remove= items[removeNumber];
         items[removeNumber]=null;
         size--;
+        nextFirst++;
         return remove;
     }
     public Item removeLast(){
         if(size==0) return null;
         if (size<=items.length/4&&size>=8) ResizeArgsSmaller();
         int removeNumber=switchNumber(nextLast-1);
-        if(outOfRange(removeNumber))return null;
 
         Item remove= items[removeNumber];
         items[removeNumber]=null;
         size--;
+        nextLast--;
         return remove;
     }
     private int switchNumber(int number){
-        boolean check=number<0||number>=items.length||items[number]==null;
-        if(check){
-            if(number==nextLast-1)
-                return nextFirst+1;
-            else
-                return nextLast-1;
-        }
-        return number;
-    }
-    private boolean outOfRange(int index){
-        if (index>=0&&index<=items.length-1) return false;
-        return true;
+       if(number<0){
+           number=items.length+number;
+           while (items[number]==null){
+               number--;
+           }
+       }
+       else if(number>=items.length){
+           number=number-items.length;
+           while (items[number]==null){
+               number++;
+           }
+       }
+       return number;
     }
     public int size(){
         return size;

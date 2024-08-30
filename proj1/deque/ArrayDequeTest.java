@@ -1,5 +1,6 @@
 package deque;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -95,7 +96,6 @@ public class ArrayDequeTest {
         String s = lld1.removeFirst();
         double d = lld2.removeFirst();
         boolean b = lld3.removeFirst();
-
     }
 
     @Test
@@ -110,7 +110,43 @@ public class ArrayDequeTest {
         boolean passed2 = false;
         assertEquals("Should return null when removeFirst is called on an empty Deque,", null, lld1.removeFirst());
         assertEquals("Should return null when removeLast is called on an empty Deque,", null, lld1.removeLast());
+    }
 
+    @Test
+    public void fillUpAndEmptyTest(){
+        ArrayDeque<Integer> ad = new ArrayDeque<Integer>();
 
+        ad.addFirst(4);
+        ad.addFirst(2);
+        ad.addLast(5);
+        ad.addLast(10);
+        ad.addFirst(76);
+        ad.addFirst(15);
+        ad.addFirst(55);
+        ad.addFirst(87);
+
+        int remove1=ad.removeLast();
+        assertEquals(10,remove1);
+
+        int remove2=ad.removeLast();
+        assertEquals(5,remove2);
+
+        int remove3=ad.removeFirst();
+        assertEquals(87,remove3);
+
+        int remove4=ad.removeFirst();
+        assertEquals(55,remove4);
+
+        int remove5=ad.removeLast();
+        assertEquals(4,remove5);
+
+        int remove6=ad.removeLast();
+        assertEquals(2,remove6);
+
+        int remove7=ad.removeFirst();
+        assertEquals(15,remove7);
+
+        int remove8=ad.removeLast();
+        assertEquals(76,remove8);
     }
 }
