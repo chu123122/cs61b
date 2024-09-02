@@ -1,6 +1,12 @@
 package deque;
 
-public class ArrayDeque<Item>{
+import org.junit.Test;
+
+import java.util.Iterator;
+
+import static org.junit.Assert.*;
+
+public class ArrayDeque<Item> implements Iterable<Item>{
     public Item[] items;
     public int size;
     public int nextFirst;
@@ -99,6 +105,32 @@ public class ArrayDeque<Item>{
     }
 
 
+    @Override
+    public Iterator<Item> iterator() {
+        return new Iterator<Item>() {
+            int firstNumber=switchNumber(nextFirst+1);
+            @Override
+            public boolean hasNext() {
+                return items[firstNumber] != null;
+            }
 
-
+            @Override
+            public Item next() {
+                Item next=items[firstNumber];
+                firstNumber=switchNumber(firstNumber+1);
+                return next;
+            }
+        };
+    }
+    @Override
+    public boolean equals(Object o){
+        if(o==null)return false;
+        if(!(o instanceof ArrayDeque))return false;
+        if(this.size()!=((ArrayDeque<?>) o).size())return false;
+        ArrayDeque<?> check=((ArrayDeque<?>) o);
+        for (int i=nextFirst+1;i<nextLast;i=switchNumber(i+1)){
+            if(items[i]!=check.items[i])return false;
+        }
+        return true;
+    }
 }

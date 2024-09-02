@@ -1,6 +1,8 @@
 package deque;
 
-public class LinkedListDeque<T> {
+import java.util.Iterator;
+
+public class LinkedListDeque<T> implements Iterable<T>{
     private final LLD<T> FrontSentinel;
     private final LLD<T> BackSentinel;
     private int size;
@@ -18,6 +20,37 @@ public class LinkedListDeque<T> {
         return recursiveHelper(index,FrontSentinel.next);
     }
 
+    @Override
+    public Iterator<T> iterator() {
+        return new Iterator<T>() {
+            public LLD<T> Front=FrontSentinel.next;
+            @Override
+            public boolean hasNext() {
+                return Front.next != null;
+            }
+
+            @Override
+            public T next() {
+                T item= Front.value;;
+                Front=Front.next;
+                return item;
+            }
+        };
+    }
+    @Override
+    public boolean equals(Object o){
+        if(o==null)return false;
+        if(!(o instanceof LinkedListDeque))return false;
+        if(this.size()!=((LinkedListDeque<?>) o).size())return false;
+        LLD<T> selfFront=this.FrontSentinel.next;
+        LLD<T> checkFront=((LinkedListDeque<T>) o).FrontSentinel.next;
+        while(selfFront!=null){
+            if(selfFront.value!= checkFront.value)return false;
+            selfFront=selfFront.next;
+            checkFront=checkFront.next;
+        }
+        return true;
+    }
     public void addFirst(T item){
         LLD<T> add=new LLD<>(item);
         LLD<T> after=FrontSentinel.next;
@@ -80,7 +113,9 @@ public class LinkedListDeque<T> {
         twice.prev=first;
     }
 
-     private class LLD<Item>{
+
+
+    private class LLD<Item>{
         public Item value;
         public LLD<Item> prev;
         public LLD<Item> next;

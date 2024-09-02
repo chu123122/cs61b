@@ -2,6 +2,7 @@ package deque;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 
 /** Performs some basic linked list tests. */
@@ -34,7 +35,6 @@ public class LinkedListDequeTest {
 
 		System.out.println("Printing out deque: ");
 		lld1.printDeque();
-
     }
 
     @Test
@@ -134,6 +134,42 @@ public class LinkedListDequeTest {
             assertEquals("Should have the same value", i, (double) lld1.removeLast(), 0.0);
         }
 
+    }
+    @Test
+    public void iteratorLLDequeTest(){
+        LinkedListDeque<Integer> lld1 = new LinkedListDeque<Integer>();
+        lld1.addFirst(5);
+        lld1.addFirst(7);
+        lld1.addLast(98);
+        lld1.addLast(11);
+        LinkedListDeque<Integer> target = new LinkedListDeque<Integer>();
+        target.addLast(7);
+        target.addLast(5);
+        target.addLast(98);
+        target.addLast(11);
+        int i=0;
+        assertEquals(lld1.size(),target.size());
+        for (int number:lld1) {
+            int ta=target.get(i);
+            assertEquals(number,ta);
+            i++;
+        }
+    }
+    @Test
+    public void equalLLDequeTest(){
+        LinkedListDeque<Integer> lld1 = new LinkedListDeque<Integer>();
+        lld1.addFirst(5);
+        lld1.addFirst(7);
+        lld1.addLast(98);
+        lld1.addLast(11);
+        LinkedListDeque<Integer> target = new LinkedListDeque<Integer>();
+        target.addLast(7);
+        target.addLast(5);
+        target.addLast(98);
+        target.addLast(11);
 
+        assertTrue(lld1.equals(target));
+        target.addLast(5);
+        assertFalse(lld1.equals(target));
     }
 }

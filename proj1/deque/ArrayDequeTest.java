@@ -149,4 +149,42 @@ public class ArrayDequeTest {
         int remove8=ad.removeLast();
         assertEquals(76,remove8);
     }
+
+    @Test
+    public void iteratorLLDequeTest(){
+        ArrayDeque<Integer> lld1 = new ArrayDeque<Integer>();
+        lld1.addFirst(5);
+        lld1.addFirst(7);
+        lld1.addLast(98);
+        lld1.addLast(11);
+        ArrayDeque<Integer> target = new ArrayDeque<Integer>();
+        target.addLast(7);
+        target.addLast(5);
+        target.addLast(98);
+        target.addLast(11);
+        int i=0;
+        assertEquals(lld1.size(),target.size());
+        for (int number:lld1) {
+            int ta=target.get(i);
+            assertEquals(number,ta);
+            i++;
+        }
+    }
+    @Test
+    public void equalLLDequeTest(){
+        ArrayDeque<Integer> lld1 = new ArrayDeque<Integer>();
+        lld1.addFirst(5);
+        lld1.addFirst(7);
+        lld1.addLast(98);
+        lld1.addLast(11);
+        ArrayDeque<Integer> target = new ArrayDeque<Integer>();
+        target.addLast(7);
+        target.addLast(5);
+        target.addLast(98);
+        target.addLast(11);
+
+        assertTrue(lld1.equals(target));
+        target.addLast(5);
+        assertFalse(lld1.equals(target));
+    }
 }
