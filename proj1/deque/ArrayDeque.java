@@ -23,7 +23,7 @@ public class ArrayDeque<Item> implements Iterable<Item>{
         return items[index];
     }
     public void printDeque(){
-        for (Item item:items) {
+        for (Item item:this) {
             System.out.println(item);
         }
         System.out.println();
