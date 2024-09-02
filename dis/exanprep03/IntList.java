@@ -1,3 +1,5 @@
+package exanprep03;
+
 public class IntList {
     public int first;
     public IntList rest;
@@ -10,8 +12,8 @@ public class IntList {
         if(lst==null||lst.rest==null){
             return;
         }
-        IntList oddList = lst.rest;
-        IntList second = lst.rest;
+        IntList oddList = lst.rest;//偶数指针
+        IntList second = lst.rest;//奇数指针
 
         while (lst.rest != null && oddList.rest != null) {
             lst.rest = lst.rest.rest;

@@ -1,13 +1,10 @@
-public class dis03 {
+package exanprep03;
+
+public class fillGrid {
     public static void main(String[] args){
         problem1();
 
     }
-
-
-
-
-
     private static void problem1(){
         int[] LL = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0, 0 };
         int[] UR = { 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
