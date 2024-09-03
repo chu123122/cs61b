@@ -1,6 +1,7 @@
 package deque;
 
 import edu.princeton.cs.algs4.StdRandom;
+import org.junit.Assert;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -8,7 +9,7 @@ import static org.junit.Assert.assertEquals;
 
 public class ArrayDequeTest {
     @Test
-    public void getTest() {
+    public void getADTestOne() {
         ArrayDeque<Integer> lld1 = new ArrayDeque<Integer>();
         lld1.addFirst(7);
         lld1.addFirst(54);
@@ -21,6 +22,30 @@ public class ArrayDequeTest {
         assertEquals(22, check2);
         int check3 = lld1.get(1);
         assertEquals(7, check3);
+    }
+
+    @Test
+    public void getADTestTwo() {
+        Deque<Integer> ad = new ArrayDeque<>();
+        ad.addFirst(12);
+        ad.addFirst(5);
+        ad.addLast(77);
+        ad.addLast(17);
+        ad.addLast(33);
+        ad.addFirst(85);
+
+        int test = ad.get(0);
+        Assert.assertEquals(85, test);
+        test = ad.get(1);
+        Assert.assertEquals(5, test);
+        test = ad.get(2);
+        Assert.assertEquals(12, test);
+        test = ad.get(3);
+        Assert.assertEquals(77, test);
+        test = ad.get(4);
+        Assert.assertEquals(17, test);
+        test = ad.get(5);
+        Assert.assertEquals(33, test);
     }
 
     @Test
@@ -206,7 +231,7 @@ public class ArrayDequeTest {
     }
 
     @Test
-    public void equalADTest(){
+    public void equalADTest() {
         ArrayDeque<Integer> lld1 = new ArrayDeque<Integer>();
         lld1.addFirst(5);
         lld1.addFirst(7);
@@ -224,43 +249,103 @@ public class ArrayDequeTest {
     }
 
     @Test
-    public void randomTest(){
-        Deque<Integer> ad=new ArrayDeque<>();
-        Deque<Integer> lld=new LinkedListDeque<>();
-        for(int i=0;i<10000;i++){
-            int index= StdRandom.uniform(0,6);
-            if(index==0){
-                int number=StdRandom.uniform(0,100);
+    public void addAndRemoveRandomTest() {
+        Deque<Integer> ad = new ArrayDeque<>();
+        Deque<Integer> lld = new LinkedListDeque<>();
+        ad.addLast(40);
+        lld.addLast(40);
+
+        ad.addLast(65);
+        lld.addLast(65);
+
+        ad.removeFirst();
+        lld.removeFirst();
+
+        ad.removeFirst();
+        lld.removeFirst();
+
+        ad.addLast(40);
+        lld.addLast(40);
+
+        ad.addLast(40);
+        lld.addLast(40);
+
+        ad.addLast(65);
+        lld.addLast(65);
+        Assert.assertTrue(lld.equals(ad));
+        Assert.assertTrue(ad.equals(lld));
+    }
+
+    @Test
+    public void ResizeADTest() {
+        ArrayDeque<Integer> ad = new ArrayDeque<>();
+        ad.addLast(1);
+        ad.addLast(2);
+        ad.addFirst(3);
+        ad.addLast(4);
+        ad.addFirst(5);
+        ad.addFirst(6);
+        ad.addLast(7);
+        ad.addLast(8);
+        ad.addLast(9);
+
+        int test1 = ad.get(0);
+        int test2 = ad.get(5);
+        int test3 = ad.get(3);
+        Assert.assertEquals(6, test1);
+        Assert.assertEquals(4, test2);
+        Assert.assertEquals(1, test3);
+    }
+
+    @Test
+    public void randomTest() {
+        Deque<Integer> ad = new ArrayDeque<>();
+        Deque<Integer> lld = new LinkedListDeque<>();
+        for (int i = 0; i < 10000; i++) {
+            int index = StdRandom.uniform(0, 7);
+
+            if (index == 0) {
+                int number = StdRandom.uniform(0, 100);
                 ad.addFirst(number);
                 lld.addFirst(number);
-            } else if (index==1) {
-                int number=StdRandom.uniform(0,100);
+                System.out.println("AddFirst:" + number);
+            } else if (index == 1) {
+                int number = StdRandom.uniform(0, 100);
                 ad.addLast(number);
                 lld.addLast(number);
-            }else if(index==2){
-                if(ad.size()==0||lld.size()==0)return;
-                int number1= ad.removeLast();
-                int number2= lld.removeLast();
-                assertEquals(number1,number2);
-            }else if(index==3){
-                if(ad.size()==0||lld.size()==0)return;
-                int number1= ad.removeFirst();
-                int number2= lld.removeFirst();
-                assertEquals(number1,number2);
-            }else if(index==4){
-                int number1= ad.size();
-                int number2= lld.size();
-                assertEquals(number1,number2);
-            }else{
-                if(ad.size()==0||lld.size()==0)return;
-                int number1= ad.size();
-                int number2= lld.size();
-                assertEquals(number1,number2);
+                System.out.println("AddLast:" + number);
+            } else if (index == 2) {
+                if (ad.size() == 0 || lld.size() == 0) continue;
+                int number1 = ad.removeLast();
+                int number2 = lld.removeLast();
+                Assert.assertEquals(number1, number2);
+                System.out.println("RemoveLast:" + number1);
+            } else if (index == 3) {
+                if (ad.size() == 0 || lld.size() == 0) continue;
+                int number1 = ad.removeFirst();
+                int number2 = lld.removeFirst();
+                Assert.assertEquals(number1, number2);
+                System.out.println("RemoveFirst:" + number1);
+            } else if (index == 4) {
+                int number1 = ad.size();
+                int number2 = lld.size();
+                assertEquals(number1, number2);
+            } else if (index == 5) {
+                boolean test1 = ad.equals(lld);
+                boolean test2 = lld.equals(ad);
+                Assert.assertTrue(test1);
+                Assert.assertTrue(test2);
+            } else {
+                if (ad.size() == 0 || lld.size() == 0) continue;
+                int number1 = ad.size();
+                int number2 = lld.size();
+                Assert.assertEquals(number1, number2);
 
-                int number=StdRandom.uniform(0,ad.size());
-                int number3= ad.get(number);
-                int number4= lld.get(number);
-                assertEquals(number3,number4);
+                int number = StdRandom.uniform(0, ad.size());
+
+                int number3 = ad.get(number);
+                int number4 = lld.get(number);
+                Assert.assertEquals(number3, number4);
             }
         }
     }
