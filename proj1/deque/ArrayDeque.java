@@ -33,14 +33,16 @@ public class ArrayDeque<Item> implements Iterable<Item>,Deque<Item>{
     @Override
     public void addFirst(Item item){
         if(size>= items.length-1) ResizeArgsBigger();
-        items[nextFirst]=item;
+        int addNumber=switchNumber(nextFirst);
+        items[addNumber]=item;
         nextFirst--;
         size++;
     }
     @Override
     public void addLast(Item item){
         if(size>= items.length-1) ResizeArgsBigger();
-        items[nextLast]=item;
+        int addNumber=switchNumber(nextLast);
+        items[addNumber]=item;
         nextLast++;
         size++;
     }
