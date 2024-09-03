@@ -156,13 +156,13 @@ public class LinkedListDequeTest {
         }
     }
     @Test
-    public void equalLLDequeTest(){
+    public void equalLLDTest(){
         LinkedListDeque<Integer> lld1 = new LinkedListDeque<Integer>();
         lld1.addFirst(5);
         lld1.addFirst(7);
         lld1.addLast(98);
         lld1.addLast(11);
-        LinkedListDeque<Integer> target = new LinkedListDeque<Integer>();
+        Deque<Integer> target = new LinkedListDeque<Integer>();
         target.addLast(7);
         target.addLast(5);
         target.addLast(98);
@@ -171,5 +171,24 @@ public class LinkedListDequeTest {
         assertTrue(lld1.equals(target));
         target.addLast(5);
         assertFalse(lld1.equals(target));
+
+    }
+    @Test
+    public void equalADTest(){
+        LinkedListDeque<Integer> lld1 = new LinkedListDeque<Integer>();
+        lld1.addFirst(5);
+        lld1.addFirst(7);
+        lld1.addLast(98);
+        lld1.addLast(11);
+        Deque<Integer> target = new ArrayDeque<>();
+        target.addLast(7);
+        target.addLast(5);
+        target.addLast(98);
+        target.addLast(11);
+
+        assertTrue(lld1.equals(target));
+        target.addLast(5);
+        assertFalse(lld1.equals(target));
+
     }
 }

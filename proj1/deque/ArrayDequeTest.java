@@ -1,5 +1,6 @@
 package deque;
 
+import edu.princeton.cs.algs4.StdRandom;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -193,7 +194,7 @@ public class ArrayDequeTest {
         lld1.addFirst(7);
         lld1.addLast(98);
         lld1.addLast(11);
-        ArrayDeque<Integer> target = new ArrayDeque<Integer>();
+        Deque<Integer> target = new ArrayDeque<Integer>();
         target.addLast(7);
         target.addLast(5);
         target.addLast(98);
@@ -202,5 +203,65 @@ public class ArrayDequeTest {
         assertTrue(lld1.equals(target));
         target.addLast(5);
         assertFalse(lld1.equals(target));
+    }
+
+    @Test
+    public void equalADTest(){
+        ArrayDeque<Integer> lld1 = new ArrayDeque<Integer>();
+        lld1.addFirst(5);
+        lld1.addFirst(7);
+        lld1.addLast(98);
+        lld1.addLast(11);
+        Deque<Integer> target = new LinkedListDeque<>();
+        target.addLast(7);
+        target.addLast(5);
+        target.addLast(98);
+        target.addLast(11);
+
+        assertTrue(lld1.equals(target));
+        target.addLast(5);
+        assertFalse(lld1.equals(target));
+    }
+
+    @Test
+    public void randomTest(){
+        Deque<Integer> ad=new ArrayDeque<>();
+        Deque<Integer> lld=new LinkedListDeque<>();
+        for(int i=0;i<10000;i++){
+            int index= StdRandom.uniform(0,6);
+            if(index==0){
+                int number=StdRandom.uniform(0,100);
+                ad.addFirst(number);
+                lld.addFirst(number);
+            } else if (index==1) {
+                int number=StdRandom.uniform(0,100);
+                ad.addLast(number);
+                lld.addLast(number);
+            }else if(index==2){
+                if(ad.size()==0||lld.size()==0)return;
+                int number1= ad.removeLast();
+                int number2= lld.removeLast();
+                assertEquals(number1,number2);
+            }else if(index==3){
+                if(ad.size()==0||lld.size()==0)return;
+                int number1= ad.removeFirst();
+                int number2= lld.removeFirst();
+                assertEquals(number1,number2);
+            }else if(index==4){
+                int number1= ad.size();
+                int number2= lld.size();
+                assertEquals(number1,number2);
+            }else{
+                if(ad.size()==0||lld.size()==0)return;
+                int number1= ad.size();
+                int number2= lld.size();
+                assertEquals(number1,number2);
+
+                int number=StdRandom.uniform(0,ad.size());
+                int number3= ad.get(number);
+                int number4= lld.get(number);
+                assertEquals(number3,number4);
+            }
+        }
     }
 }

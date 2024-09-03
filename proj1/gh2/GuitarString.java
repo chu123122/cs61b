@@ -1,9 +1,7 @@
 package gh2;
 
-import deque.ArrayDeque;
 import deque.Deque;
 import deque.LinkedListDeque;
-import org.apache.commons.logging.impl.LogKitLogger;
 
 //Note: This file will not compile until you complete the Deque implementations
 public class GuitarString {
@@ -45,9 +43,6 @@ public class GuitarString {
      * the Karplus-Strong algorithm.
      */
     public void tic() {
-        // TODO: Dequeue the front sample and enqueue a new sample that is
-        //       the average of the two multiplied by the DECAY factor.
-        //       **Do not call StdAudio.play().**
         Double remove = buffer.removeFirst();
         Double last = buffer.get(0);
         Double add = (remove + last) / 2 * DECAY;

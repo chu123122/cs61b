@@ -3,21 +3,21 @@ package deque;
 import java.util.Iterator;
 
 public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
-    private final LLD<T> FrontSentinel;
-    private final LLD<T> BackSentinel;
+    private final LLD<T> frontSentinel;
+    private final LLD<T> backSentinel;
     private int size;
 
     public LinkedListDeque() {
-        FrontSentinel = new LLD<>(null);
-        BackSentinel = new LLD<>(null);
-        linkTwoList(FrontSentinel, BackSentinel);
+        frontSentinel = new LLD<>(null);
+        backSentinel = new LLD<>(null);
+        linkTwoList(frontSentinel, backSentinel);
         size = 0;
     }
 
     @Override
     public T get(int index) {
         int currentIndex = 0;
-        LLD<T> currentCheck = FrontSentinel.next;
+        LLD<T> currentCheck = frontSentinel.next;
         while (currentIndex < index) {
             currentCheck = currentCheck.next;
             currentIndex++;
@@ -26,24 +26,24 @@ public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
     }
 
     public T getRecursive(int index) {
-        return recursiveHelper(index, FrontSentinel.next);
+        return recursiveHelper(index, frontSentinel.next);
     }
 
     @Override
     public Iterator<T> iterator() {
         return new Iterator<T>() {
-            public LLD<T> Front = FrontSentinel.next;
+            private LLD<T> front = frontSentinel.next;
 
             @Override
             public boolean hasNext() {
-                return Front.next != null;
+                return front.next != null;
             }
 
             @Override
             public T next() {
-                T item = Front.value;
+                T item = front.value;
                 ;
-                Front = Front.next;
+                front = front.next;
                 return item;
             }
         };
@@ -54,9 +54,9 @@ public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
         if (o == null) return false;
         if (!(o instanceof Deque)) return false;
         if (this.size() != ((Deque<?>) o).size()) return false;
-        Deque<T> checkFront = ((Deque<T>) o);
-        for (int i = 0; i <= this.size(); i++) {
-            if (this.get(i) != checkFront.get(i)) return false;
+        Deque<T> check = ((Deque<T>) o);
+        for (int i = 0; i < this.size(); i++) {
+            if (this.get(i) != check.get(i)) return false;
         }
         return true;
     }
@@ -64,8 +64,8 @@ public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
     @Override
     public void addFirst(T item) {
         LLD<T> add = new LLD<>(item);
-        LLD<T> after = FrontSentinel.next;
-        linkTwoList(FrontSentinel, add);
+        LLD<T> after = frontSentinel.next;
+        linkTwoList(frontSentinel, add);
         linkTwoList(add, after);
         size++;
     }
@@ -73,9 +73,9 @@ public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
     @Override
     public void addLast(T item) {
         LLD<T> add = new LLD<>(item);
-        LLD<T> before = BackSentinel.prev;
+        LLD<T> before = backSentinel.prev;
 
-        linkTwoList(add, BackSentinel);
+        linkTwoList(add, backSentinel);
         linkTwoList(before, add);
         size++;
     }
@@ -83,8 +83,8 @@ public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
     @Override
     public T removeFirst() {
         if (size == 0) return null;
-        LLD<T> remove = FrontSentinel.next;
-        linkTwoList(FrontSentinel, remove.next);
+        LLD<T> remove = frontSentinel.next;
+        linkTwoList(frontSentinel, remove.next);
         size--;
         return remove.value;
     }
@@ -92,17 +92,17 @@ public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
     @Override
     public T removeLast() {
         if (size == 0) return null;
-        LLD<T> remove = BackSentinel.prev;
-        linkTwoList(remove.prev, BackSentinel);
+        LLD<T> remove = backSentinel.prev;
+        linkTwoList(remove.prev, backSentinel);
         size--;
         return remove.value;
     }
 
     @Override
     public void printDeque() {
-        LLD<T> check = FrontSentinel.next;
+        LLD<T> check = frontSentinel.next;
         while (check != null) {
-            if (check == BackSentinel) break;
+            if (check == backSentinel) break;
             System.out.println(check.value);
             check = check.next;
         }
@@ -128,9 +128,9 @@ public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
 
 
     private class LLD<Item> {
-        public Item value;
-        public LLD<Item> prev;
-        public LLD<Item> next;
+        private final Item value;
+        private LLD<Item> prev;
+        private LLD<Item> next;
 
         public LLD(Item value) {
             this.value = value;

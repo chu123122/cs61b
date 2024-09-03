@@ -1,26 +1,22 @@
 package deque;
 
-import org.junit.Test;
-
 import java.util.Iterator;
 
-import static org.junit.Assert.*;
-
-public class ArrayDeque<Item> implements Iterable<Item>, Deque<Item> {
-    private Item[] items;
+public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
+    private T[] items;
     private int size;
     private int nextFirst;
     private int nextLast;
 
     public ArrayDeque() {
-        items = (Item[]) new Object[8];
+        items = (T[]) new Object[8];
         size = 0;
         nextFirst = 7;
         nextLast = 0;
     }
 
     @Override
-    public Item get(int index) {
+    public T get(int index) {
         if (index >= items.length || index < 0) return null;
         int switchNumber = switchNumber((nextFirst + 1) + index);
         return items[switchNumber];
@@ -28,30 +24,30 @@ public class ArrayDeque<Item> implements Iterable<Item>, Deque<Item> {
 
     @Override
     public void printDeque() {
-        for (Item item : this) {
+        for (T item : this) {
             System.out.println(item);
         }
         System.out.println();
     }
 
     @Override
-    public void addFirst(Item item) {
+    public void addFirst(T item) {
         int addNumber = switchNumber(nextFirst);
         items[addNumber] = item;
         nextFirst--;
         size++;
 
-        if (size >= items.length - 1) ResizeArgsBigger();
+        if (size >= items.length - 1) resizeArgsBigger();
     }
 
     @Override
-    public void addLast(Item item) {
+    public void addLast(T item) {
         int addNumber = switchNumber(nextLast);
         items[addNumber] = item;
         nextLast++;
         size++;
 
-        if (size >= items.length - 1) ResizeArgsBigger();
+        if (size >= items.length - 1) resizeArgsBigger();
     }
 
     @Override
@@ -60,30 +56,30 @@ public class ArrayDeque<Item> implements Iterable<Item>, Deque<Item> {
     }
 
     @Override
-    public Item removeFirst() {
+    public T removeFirst() {
         if (size == 0) return null;
         int removeNumber = switchNumber(nextFirst + 1);
 
-        Item remove = items[removeNumber];
+        T remove = items[removeNumber];
         items[removeNumber] = null;
         size--;
         nextFirst++;
 
-        if (size <= items.length / 4 && size >= 8) ResizeArgsSmaller();
+        if (size <= items.length / 4 && size >= 8) resizeArgsSmaller();
         return remove;
     }
 
     @Override
-    public Item removeLast() {
+    public T removeLast() {
         if (size == 0) return null;
         int removeNumber = switchNumber(nextLast - 1);
 
-        Item remove = items[removeNumber];
+        T remove = items[removeNumber];
         items[removeNumber] = null;
         size--;
         nextLast--;
 
-        if (size <= items.length / 4 && size >= 8) ResizeArgsSmaller();
+        if (size <= items.length / 4 && size >= 8) resizeArgsSmaller();
         return remove;
     }
 
@@ -107,20 +103,20 @@ public class ArrayDeque<Item> implements Iterable<Item>, Deque<Item> {
         return size == 0;
     }
 
-    private void ResizeArgsBigger() {
+    private void resizeArgsBigger() {
         float multiplier = 2f;
         int total = (int) (items.length * multiplier);
-        Item[] newItems = (Item[]) new Object[total];
+        T[] newItems = (T[]) new Object[total];
         for (int i = 0; i < items.length; i++) {
             newItems[i] = items[i];
         }
         items = newItems;
     }
 
-    private void ResizeArgsSmaller() {
+    private void resizeArgsSmaller() {
         float multiplier = 0.5f;
         int total = (int) (items.length * multiplier);
-        Item[] newItems = (Item[]) new Object[total];
+        T[] newItems = (T[]) new Object[total];
         for (int i = 0; i < total; i++) {
             newItems[i] = items[i];
         }
@@ -129,8 +125,8 @@ public class ArrayDeque<Item> implements Iterable<Item>, Deque<Item> {
 
 
     @Override
-    public Iterator<Item> iterator() {
-        return new Iterator<Item>() {
+    public Iterator<T> iterator() {
+        return new Iterator<T>() {
             int firstNumber = switchNumber(nextFirst + 1);
 
             @Override
@@ -139,8 +135,8 @@ public class ArrayDeque<Item> implements Iterable<Item>, Deque<Item> {
             }
 
             @Override
-            public Item next() {
-                Item next = items[firstNumber];
+            public T next() {
+                T next = items[firstNumber];
                 firstNumber = switchNumber(firstNumber + 1);
                 return next;
             }
