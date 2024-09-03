@@ -1,12 +1,27 @@
 package deque;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
 public class ArrayDequeTest {
+    @Test
+    public void getTest() {
+        ArrayDeque<Integer> lld1 = new ArrayDeque<Integer>();
+        lld1.addFirst(7);
+        lld1.addFirst(54);
+        lld1.addFirst(22);
+        lld1.addLast(9);
+        lld1.addLast(19);
+        int check1 = lld1.get(0);
+        assertEquals(22, check1);
+        int check2 = lld1.removeFirst();
+        assertEquals(22, check2);
+        int check3 = lld1.get(1);
+        assertEquals(7, check3);
+    }
+
     @Test
     /** Adds a few things to the list, checking isEmpty() and size() are correct,
      * finally printing the results.
@@ -85,8 +100,8 @@ public class ArrayDequeTest {
     public void multipleParamTest() {
 
 
-        ArrayDeque<String>  lld1 = new ArrayDeque<String>();
-        ArrayDeque<Double>  lld2 = new ArrayDeque<Double>();
+        ArrayDeque<String> lld1 = new ArrayDeque<String>();
+        ArrayDeque<Double> lld2 = new ArrayDeque<Double>();
         ArrayDeque<Boolean> lld3 = new ArrayDeque<Boolean>();
 
         lld1.addFirst("string");
@@ -113,7 +128,7 @@ public class ArrayDequeTest {
     }
 
     @Test
-    public void fillUpAndEmptyTest(){
+    public void fillUpAndEmptyTest() {
         ArrayDeque<Integer> ad = new ArrayDeque<Integer>();
 
         ad.addFirst(4);
@@ -125,33 +140,33 @@ public class ArrayDequeTest {
         ad.addFirst(55);
         ad.addFirst(87);
 
-        int remove1=ad.removeLast();
-        assertEquals(10,remove1);
+        int remove1 = ad.removeLast();
+        assertEquals(10, remove1);
 
-        int remove2=ad.removeLast();
-        assertEquals(5,remove2);
+        int remove2 = ad.removeLast();
+        assertEquals(5, remove2);
 
-        int remove3=ad.removeFirst();
-        assertEquals(87,remove3);
+        int remove3 = ad.removeFirst();
+        assertEquals(87, remove3);
 
-        int remove4=ad.removeFirst();
-        assertEquals(55,remove4);
+        int remove4 = ad.removeFirst();
+        assertEquals(55, remove4);
 
-        int remove5=ad.removeLast();
-        assertEquals(4,remove5);
+        int remove5 = ad.removeLast();
+        assertEquals(4, remove5);
 
-        int remove6=ad.removeLast();
-        assertEquals(2,remove6);
+        int remove6 = ad.removeLast();
+        assertEquals(2, remove6);
 
-        int remove7=ad.removeFirst();
-        assertEquals(15,remove7);
+        int remove7 = ad.removeFirst();
+        assertEquals(15, remove7);
 
-        int remove8=ad.removeLast();
-        assertEquals(76,remove8);
+        int remove8 = ad.removeLast();
+        assertEquals(76, remove8);
     }
 
     @Test
-    public void iteratorLLDequeTest(){
+    public void iteratorLLDequeTest() {
         ArrayDeque<Integer> lld1 = new ArrayDeque<Integer>();
         lld1.addFirst(5);
         lld1.addFirst(7);
@@ -162,16 +177,17 @@ public class ArrayDequeTest {
         target.addLast(5);
         target.addLast(98);
         target.addLast(11);
-        int i=0;
-        assertEquals(lld1.size(),target.size());
-        for (int number:lld1) {
-            int ta=target.get(i);
-            assertEquals(number,ta);
+        int i = 0;
+        assertEquals(lld1.size(), target.size());
+        for (int number : lld1) {
+            int ta = target.get(i);
+            assertEquals(number, ta);
             i++;
         }
     }
+
     @Test
-    public void equalLLDequeTest(){
+    public void equalLLDequeTest() {
         ArrayDeque<Integer> lld1 = new ArrayDeque<Integer>();
         lld1.addFirst(5);
         lld1.addFirst(7);
