@@ -2,11 +2,11 @@ package deque;
 
 import java.util.Iterator;
 
-public class LinkedListDeque<T> implements Iterable<T>{
+public class LinkedListDeque<T> implements Iterable<T>,Deque<T>{
     private final LLD<T> FrontSentinel;
     private final LLD<T> BackSentinel;
     private int size;
-
+    @Override
     public T get(int index){
         int currentIndex=0;
         LLD<T> currentCheck=FrontSentinel.next;
@@ -51,6 +51,7 @@ public class LinkedListDeque<T> implements Iterable<T>{
         }
         return true;
     }
+    @Override
     public void addFirst(T item){
         LLD<T> add=new LLD<>(item);
         LLD<T> after=FrontSentinel.next;
@@ -58,6 +59,7 @@ public class LinkedListDeque<T> implements Iterable<T>{
         linkTwoList(add,after);
         size++;
     }
+    @Override
     public void addLast(T item){
         LLD<T> add=new LLD<>(item);
         LLD<T> before=BackSentinel.prev;
@@ -66,6 +68,7 @@ public class LinkedListDeque<T> implements Iterable<T>{
         linkTwoList(before,add);
         size++;
     }
+    @Override
     public T removeFirst(){
         if(size==0)return null;
         LLD<T> remove=FrontSentinel.next;
@@ -73,6 +76,7 @@ public class LinkedListDeque<T> implements Iterable<T>{
         size--;
         return remove.value;
     }
+    @Override
     public T removeLast(){
         if(size==0)return null;
         LLD<T> remove=BackSentinel.prev;
@@ -80,6 +84,7 @@ public class LinkedListDeque<T> implements Iterable<T>{
         size--;
         return remove.value;
     }
+    @Override
     public void printDeque(){
         LLD<T> check=FrontSentinel.next;
         while (check!=null){
@@ -88,9 +93,6 @@ public class LinkedListDeque<T> implements Iterable<T>{
             check=check.next;
         }
         System.out.println();
-    }
-    public boolean isEmpty(){
-        return size == 0;
     }
     public int size(){
         return size;

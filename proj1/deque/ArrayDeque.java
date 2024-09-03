@@ -6,7 +6,7 @@ import java.util.Iterator;
 
 import static org.junit.Assert.*;
 
-public class ArrayDeque<Item> implements Iterable<Item>{
+public class ArrayDeque<Item> implements Iterable<Item>,Deque<Item>{
     public Item[] items;
     public int size;
     public int nextFirst;
@@ -18,22 +18,26 @@ public class ArrayDeque<Item> implements Iterable<Item>{
         nextFirst=7;
         nextLast=0;
     }
+    @Override
     public Item get(int index){
         if(index>size||index<0)return null;
         return items[index];
     }
+    @Override
     public void printDeque(){
         for (Item item:this) {
             System.out.println(item);
         }
         System.out.println();
     }
+    @Override
     public void addFirst(Item item){
         if(size>= items.length-1) ResizeArgsBigger();
         items[nextFirst]=item;
         nextFirst--;
         size++;
     }
+    @Override
     public void addLast(Item item){
         if(size>= items.length-1) ResizeArgsBigger();
         items[nextLast]=item;
@@ -41,6 +45,11 @@ public class ArrayDeque<Item> implements Iterable<Item>{
         size++;
     }
 
+    @Override
+    public int size() {
+        return size;
+    }
+    @Override
     public Item removeFirst(){
         if(size==0) return null;
         if (size<=items.length/4&&size>=8) ResizeArgsSmaller();
@@ -52,6 +61,7 @@ public class ArrayDeque<Item> implements Iterable<Item>{
         nextFirst++;
         return remove;
     }
+    @Override
     public Item removeLast(){
         if(size==0) return null;
         if (size<=items.length/4&&size>=8) ResizeArgsSmaller();
@@ -78,10 +88,7 @@ public class ArrayDeque<Item> implements Iterable<Item>{
        }
        return number;
     }
-    public int size(){
-        return size;
-    }
-
+    @Override
     public boolean isEmpty(){
         return size == 0;
     }
