@@ -60,6 +60,10 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
         size--;
 
         nextFirst = removeNumber;
+        if(size==0) {
+            nextFirst = 7;
+            nextLast = 0;
+        }
         if (size <= items.length / 4 && size >= 8) resizeArgsSmaller();
         return remove;
     }
@@ -77,7 +81,11 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
         size--;
 
         nextLast = removeNumber;
-        if (size <= items.length / 4 && size >= 8) resizeArgsSmaller();
+        if(size==0) {
+            nextFirst = 7;
+            nextLast = 0;
+        }
+        if (size <= items.length / 4 && items.length > 8) resizeArgsSmaller();
         return remove;
     }
 
@@ -119,14 +127,23 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
         nextFirst=newItemsLast;
         items = newItems;
     }
-
+    //TODO:当nextLast一直推进到nextLast后会导致Resize异常！（同理nextFirst会导致一样的问题）
+    //TODO:1.考虑添加bool变量（繁琐）2.
     private void resizeArgsSmaller() {
         float multiplier = 0.5f;
         int total = (int) (items.length * multiplier);
         T[] newItems = (T[]) new Object[total];
-        for (int i = 0; i < total; i++) {
-            newItems[i] = items[i];
+        for (int i = 0; i < nextLast; i++) {
+            if(items[i]!=null)
+                newItems[i] = items[i];
         }
+        int newItemsLast= newItems.length-1;
+        for(int i=items.length-1;i>nextFirst;i--){
+            if(items[i]!=null)
+                newItems[newItemsLast]=items[i];
+            newItemsLast--;
+        }
+        nextFirst=newItemsLast;
         items = newItems;
     }
 

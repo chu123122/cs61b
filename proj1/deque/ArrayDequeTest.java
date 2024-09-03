@@ -289,6 +289,26 @@ public class ArrayDequeTest {
         ad.addLast(8);
         ad.addLast(9);
 
+        ad.removeLast();
+        ad.removeLast();
+        ad.removeLast();
+        ad.removeLast();
+        ad.removeLast();
+        ad.removeLast();
+        ad.removeLast();
+        ad.removeLast();
+        ad.removeLast();
+
+        ad.addLast(1);
+        ad.addLast(2);
+        ad.addFirst(3);
+        ad.addLast(4);
+        ad.addFirst(5);
+        ad.addFirst(6);
+        ad.addLast(7);
+        ad.addLast(8);
+        ad.addLast(9);
+
         int test1 = ad.get(0);
         int test2 = ad.get(5);
         int test3 = ad.get(3);
