@@ -4,6 +4,8 @@ import edu.princeton.cs.algs4.StdRandom;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Random;
+
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
@@ -297,7 +299,6 @@ public class ArrayDequeTest {
         ad.removeLast();
         ad.removeLast();
         ad.removeLast();
-        ad.removeLast();
 
         ad.addLast(1);
         ad.addLast(2);
@@ -319,10 +320,13 @@ public class ArrayDequeTest {
 
     @Test
     public void randomTest() {
+        long seed = 1725450026615L; // 使用之前记录的种子值
+        Random random = new Random(seed);
+        System.out.println("Seed: " + seed);
         Deque<Integer> ad = new ArrayDeque<>();
         Deque<Integer> lld = new LinkedListDeque<>();
         for (int i = 0; i < 10000; i++) {
-            int index = StdRandom.uniform(0, 7);
+            int index = random.nextInt(7);
 
             if (index == 0) {
                 int number = StdRandom.uniform(0, 100);

@@ -34,7 +34,7 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
         items[nextFirst] = item;
         size++;
 
-        nextFirst = switchNumber(nextFirst - 1);//调整到下一位首位添加
+        nextFirst = switchNumberSet(nextFirst - 1);//调整到下一位首位添加
         if (size >= items.length - 1) resizeArgsBigger();
     }
 
@@ -43,7 +43,7 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
         items[nextLast] = item;
         size++;
 
-        nextLast = switchNumber(nextLast + 1);//调整到下一位末位添加
+        nextLast = switchNumberSet(nextLast + 1);//调整到下一位末位添加
         if (size >= items.length - 1) resizeArgsBigger();
     }
 
@@ -51,7 +51,7 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
     @Override
     public T removeFirst() {
         if (size == 0) return null;
-        int removeNumber = switchNumber(nextFirst + 1);//调整到首位
+        int removeNumber = switchNumberSet(nextFirst + 1);//调整到首位
         while (items[removeNumber] == null) {
             removeNumber += 1;
         }
@@ -71,7 +71,7 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
     @Override
     public T removeLast() {
         if (size == 0) return null;
-        int removeNumber = switchNumber(nextLast - 1);//调整到末位
+        int removeNumber = switchNumberSet(nextLast - 1);//调整到末位
         while (items[removeNumber] == null) {
             removeNumber -= 1;
         }
@@ -89,7 +89,7 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
         return remove;
     }
 
-    private int switchNumber(int number) {
+    private int switchNumberSet(int number) {
         if (number >= items.length) {
             return number - items.length;
         } else if (number < 0) {
@@ -98,11 +98,28 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
             return number;
         }
     }
+    private int switchNumberGet(int number) {
+        if (number >= items.length) {
+            int returnNumber=number - items.length;
+            while (items[returnNumber]==null) {
+                returnNumber++;
+            }
+            return returnNumber;
+        } else if (number < 0) {
+            int returnNumber=number + items.length;
+            while (items[returnNumber]==null) {
+                returnNumber--;
+            }
+            return returnNumber;
+        } else {
+            return number;
+        }
+    }
     //TODO:存在问题！
     @Override
     public T get(int index) {
         if (index >= items.length || index < 0) return null;
-        int switchNumber = switchNumber((nextFirst + 1) + index);
+        int switchNumber = switchNumberGet((nextFirst + 1) + index);
 
         return items[switchNumber];
     }
@@ -116,24 +133,7 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
         float multiplier = 2f;
         int total = (int) (items.length * multiplier);
         T[] newItems = (T[]) new Object[total];
-        for (int i = 0; i < nextLast; i++) {
-            newItems[i] = items[i];
-        }
-        int newItemsLast= newItems.length-1;
-        for(int i=items.length-1;i>nextFirst;i--){
-            newItems[newItemsLast]=items[i];
-            newItemsLast--;
-        }
-        nextFirst=newItemsLast;
-        items = newItems;
-    }
-    //TODO:当nextLast一直推进到nextLast后会导致Resize异常！（同理nextFirst会导致一样的问题）
-    //TODO:1.考虑添加bool变量（繁琐）2.
-    private void resizeArgsSmaller() {
-        float multiplier = 0.5f;
-        int total = (int) (items.length * multiplier);
-        T[] newItems = (T[]) new Object[total];
-        for (int i = 0; i < nextLast; i++) {
+        for (int i = nextLast-1; i >=0; i--) {
             if(items[i]!=null)
                 newItems[i] = items[i];
         }
@@ -146,12 +146,68 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
         nextFirst=newItemsLast;
         items = newItems;
     }
+    private boolean checkOutRange(){
+        if(nextFirst<nextLast){
+            for (int j=nextLast;j<nextFirst;j++){
+                if(items[j]!=null)return false;
+                }
+            return true;
+        }
+        return false;
+    }
+    //TODO:当nextLast一直推进到nextLast后会导致Resize异常！（同理nextFirst会导致一样的问题）
+    //TODO:1.考虑添加bool变量（繁琐）2.划分区域，指针依旧跟随（尝试ing）
+    private void resizeArgsSmaller() {
+        float multiplier = 0.5f;
+        int total = (int) (items.length * multiplier);
+        T[] newItems = (T[]) new Object[total];
+
+        boolean outOfRange=(items[0]==null&&checkOutRange());
+        boolean toLeftRange=false;
+        boolean toRightRange=false;
+        if(outOfRange){
+            if(nextFirst+nextLast<items.length){
+                toLeftRange=true;
+            }else {
+                toRightRange=true;
+            }
+        }
+        if(!toRightRange){
+            int oldItemsFirst=switchNumberGet(0);
+            for (int i=0;i<nextLast;i++){
+                int oldItemsNumber=i+(items.length-newItems.length);
+                int switchNumber=switchNumberSet(oldItemsNumber);
+                if(oldItemsNumber!=switchNumber)
+                    newItems[switchNumber]=items[oldItemsFirst];
+                else
+                    newItems[i]=items[oldItemsFirst];
+                oldItemsFirst++;
+            }
+            nextLast=oldItemsFirst;
+        }
+
+        if(!toLeftRange){
+            int oldItemsLast=switchNumberGet(items.length-1);
+            int currentNextLast;
+            if(toRightRange)currentNextLast= newItems.length-(items.length-nextFirst);
+            else currentNextLast=nextLast;
+            for(int i= newItems.length-1;i>currentNextLast;i--){
+                if(items[oldItemsLast]==null){
+                    nextFirst=i;
+                    break;
+                }
+                newItems[i]=items[oldItemsLast];
+                oldItemsLast--;
+            }
+        }
+        items = newItems;
+    }
 
 
     @Override
     public Iterator<T> iterator() {
         return new Iterator<T>() {
-            int firstNumber = switchNumber(nextFirst + 1);
+            int firstNumber = switchNumberSet(nextFirst + 1);
 
             @Override
             public boolean hasNext() {
@@ -161,7 +217,7 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
             @Override
             public T next() {
                 T next = items[firstNumber];
-                firstNumber = switchNumber(firstNumber + 1);
+                firstNumber = switchNumberSet(firstNumber + 1);
                 return next;
             }
         };
