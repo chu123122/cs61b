@@ -60,7 +60,7 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
         size--;
 
         nextFirst = removeNumber;
-        if(size==0) {
+        if (size == 0) {
             nextFirst = 7;
             nextLast = 0;
         }
@@ -81,7 +81,7 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
         size--;
 
         nextLast = removeNumber;
-        if(size==0) {
+        if (size == 0) {
             nextFirst = 7;
             nextLast = 0;
         }
@@ -98,16 +98,27 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
             return number;
         }
     }
+
+    private int switchNumberSet(int number, T[] items) {
+        if (number >= items.length) {
+            return number - items.length;
+        } else if (number < 0) {
+            return number + items.length;
+        } else {
+            return number;
+        }
+    }
+
     private int switchNumberGet(int number) {
         if (number >= items.length) {
-            int returnNumber=number - items.length;
-            while (items[returnNumber]==null) {
+            int returnNumber = number - items.length;
+            while (items[returnNumber] == null) {
                 returnNumber++;
             }
             return returnNumber;
         } else if (number < 0) {
-            int returnNumber=number + items.length;
-            while (items[returnNumber]==null) {
+            int returnNumber = number + items.length;
+            while (items[returnNumber] == null) {
                 returnNumber--;
             }
             return returnNumber;
@@ -115,6 +126,7 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
             return number;
         }
     }
+
     //TODO:存在问题！
     @Override
     public T get(int index) {
@@ -124,37 +136,34 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
         return items[switchNumber];
     }
 
-    @Override
-    public boolean isEmpty() {
-        return size == 0;
-    }
-
     private void resizeArgsBigger() {
         float multiplier = 2f;
         int total = (int) (items.length * multiplier);
         T[] newItems = (T[]) new Object[total];
-        for (int i = nextLast-1; i >=0; i--) {
-            if(items[i]!=null)
+        for (int i = nextLast - 1; i >= 0; i--) {
+            if (items[i] != null)
                 newItems[i] = items[i];
         }
-        int newItemsLast= newItems.length-1;
-        for(int i=items.length-1;i>nextFirst;i--){
-            if(items[i]!=null)
-                newItems[newItemsLast]=items[i];
+        int newItemsLast = newItems.length - 1;
+        for (int i = items.length - 1; i > nextFirst; i--) {
+            if (items[i] != null)
+                newItems[newItemsLast] = items[i];
             newItemsLast--;
         }
-        nextFirst=newItemsLast;
+        nextFirst = newItemsLast;
         items = newItems;
     }
-    private boolean checkOutRange(){
-        if(nextFirst<nextLast){
-            for (int j=nextLast;j<nextFirst;j++){
-                if(items[j]!=null)return false;
-                }
+
+    private boolean checkOutRange() {
+        if (nextFirst < nextLast) {
+            for (int j = nextLast; j < nextFirst; j++) {
+                if (items[j] != null) return false;
+            }
             return true;
         }
         return false;
     }
+
     //TODO:当nextLast一直推进到nextLast后会导致Resize异常！（同理nextFirst会导致一样的问题）
     //TODO:1.考虑添加bool变量（繁琐）2.划分区域，指针依旧跟随（尝试ing）
     private void resizeArgsSmaller() {
@@ -162,43 +171,46 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
         int total = (int) (items.length * multiplier);
         T[] newItems = (T[]) new Object[total];
 
-        boolean outOfRange=(items[0]==null&&checkOutRange());
-        boolean toLeftRange=false;
-        boolean toRightRange=false;
-        if(outOfRange){
-            if(nextFirst+nextLast<items.length){
-                toLeftRange=true;
-            }else {
-                toRightRange=true;
+        boolean outOfRange = (items[0] == null && checkOutRange());
+        boolean toLeftRange = false;
+        boolean toRightRange = false;
+        if (outOfRange) {
+            if (nextFirst + nextLast < items.length) {
+                toLeftRange = true;
+            } else {
+                toRightRange = true;
             }
         }
-        if(!toRightRange){
-            int oldItemsFirst=switchNumberGet(0);
-            for (int i=0;i<nextLast;i++){
-                int oldItemsNumber=i+(items.length-newItems.length);
-                int switchNumber=switchNumberSet(oldItemsNumber);
-                if(oldItemsNumber!=switchNumber)
-                    newItems[switchNumber]=items[oldItemsFirst];
+        if (!toRightRange) {
+            int oldItemsFirst = switchNumberGet(0);
+            for (int i = 0; i < nextLast; i++) {
+                int switchNumber = switchNumberSet(i, newItems);
+                if (i != switchNumber)
+                    newItems[switchNumber] = items[oldItemsFirst];
                 else
-                    newItems[i]=items[oldItemsFirst];
+                    newItems[i] = items[oldItemsFirst];
                 oldItemsFirst++;
             }
-            nextLast=oldItemsFirst;
+            nextLast = oldItemsFirst;
         }
 
-        if(!toLeftRange){
-            int oldItemsLast=switchNumberGet(items.length-1);
+        if (!toLeftRange) {
+            int oldItemsLast = switchNumberGet(items.length - 1);
             int currentNextLast;
-            if(toRightRange)currentNextLast= newItems.length-(items.length-nextFirst);
-            else currentNextLast=nextLast;
-            for(int i= newItems.length-1;i>currentNextLast;i--){
-                if(items[oldItemsLast]==null){
-                    nextFirst=i;
-                    break;
-                }
-                newItems[i]=items[oldItemsLast];
+            if (toRightRange) currentNextLast = newItems.length - (items.length - nextFirst);
+            else currentNextLast = nextLast;
+            for (int i = newItems.length - 1; i > currentNextLast; i--) {
+                int switchNumber = switchNumberSet(i, newItems);
+                if (i != switchNumber)
+                    newItems[switchNumber] = items[oldItemsLast];
+                else
+                    newItems[i] = items[oldItemsLast];
                 oldItemsLast--;
             }
+            if (!toRightRange)
+                nextFirst = newItems.length - (items.length - nextFirst);
+            else
+                nextLast = oldItemsLast;
         }
         items = newItems;
     }
