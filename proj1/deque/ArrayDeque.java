@@ -127,7 +127,6 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
         }
     }
 
-    //TODO:存在问题！
     @Override
     public T get(int index) {
         if (index >= items.length || index < 0) return null;
