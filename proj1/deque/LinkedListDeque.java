@@ -51,12 +51,20 @@ public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
 
     @Override
     public boolean equals(Object o) {
-        if (o == null) return false;
-        if (!(o instanceof Deque)) return false;
-        if (this.size() != ((Deque<?>) o).size()) return false;
+        if (o == null) {
+            return false;
+        }
+        if (!(o instanceof Deque)) {
+            return false;
+        }
+        if (this.size() != ((Deque<?>) o).size()) {
+            return false;
+        }
         Deque<T> check = ((Deque<T>) o);
         for (int i = 0; i < this.size(); i++) {
-            if (this.get(i) != check.get(i)) return false;
+            if (this.get(i) != check.get(i)) {
+                return false;
+            }
         }
         return true;
     }
@@ -82,7 +90,9 @@ public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
 
     @Override
     public T removeFirst() {
-        if (size == 0) return null;
+        if (size == 0) {
+            return null;
+        }
         LLD<T> remove = frontSentinel.next;
         linkTwoList(frontSentinel, remove.next);
         size--;
@@ -91,7 +101,9 @@ public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
 
     @Override
     public T removeLast() {
-        if (size == 0) return null;
+        if (size == 0) {
+            return null;
+        }
         LLD<T> remove = backSentinel.prev;
         linkTwoList(remove.prev, backSentinel);
         size--;
@@ -102,7 +114,9 @@ public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
     public void printDeque() {
         LLD<T> check = frontSentinel.next;
         while (check != null) {
-            if (check == backSentinel) break;
+            if (check == backSentinel) {
+                break;
+            }
             System.out.println(check.value);
             check = check.next;
         }

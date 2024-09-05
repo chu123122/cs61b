@@ -345,7 +345,9 @@ public class ArrayDequeTest {
                 Assert.assertEquals(number1, number2);
                 System.out.println("RemoveLast:" + number1);
             } else if (index == 3) {
-                if (ad.size() == 0 || lld.size() == 0) continue;
+                if (ad.size() == 0 || lld.size() == 0) {
+                    continue;
+                }
                 int number1 = ad.removeFirst();
                 int number2 = lld.removeFirst();
                 Assert.assertEquals(number1, number2);

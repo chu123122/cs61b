@@ -35,7 +35,9 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
         size++;
 
         nextFirst = switchNumberSet(nextFirst - 1);//调整到下一位首位添加
-        if (size >= items.length - 1) resizeArgsBigger();
+        if (size >= items.length - 1) {
+            resizeArgsBigger();
+        }
     }
 
     @Override
@@ -44,13 +46,17 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
         size++;
 
         nextLast = switchNumberSet(nextLast + 1);//调整到下一位末位添加
-        if (size >= items.length - 1) resizeArgsBigger();
+        if (size >= items.length - 1) {
+            resizeArgsBigger();
+        }
     }
 
 
     @Override
     public T removeFirst() {
-        if (size == 0) return null;
+        if (size == 0) {
+            return null;
+        }
         int removeNumber = switchNumberSet(nextFirst + 1);//调整到首位
         while (items[removeNumber] == null) {
             removeNumber += 1;
@@ -64,13 +70,17 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
             nextFirst = 7;
             nextLast = 0;
         }
-        if (size <= items.length / 4 && size >= 8) resizeArgsSmaller();
+        if (size <= items.length / 4 && size >= 8) {
+            resizeArgsSmaller();
+        }
         return remove;
     }
 
     @Override
     public T removeLast() {
-        if (size == 0) return null;
+        if (size == 0) {
+            return null;
+        }
         int removeNumber = switchNumberSet(nextLast - 1);//调整到末位
         while (items[removeNumber] == null) {
             removeNumber -= 1;
@@ -85,7 +95,9 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
             nextFirst = 7;
             nextLast = 0;
         }
-        if (size <= items.length / 4 && items.length > 8) resizeArgsSmaller();
+        if (size <= items.length / 4 && items.length > 8) {
+            resizeArgsSmaller();
+        }
         return remove;
     }
 
@@ -129,7 +141,9 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
 
     @Override
     public T get(int index) {
-        if (index >= items.length || index < 0) return null;
+        if (index >= items.length || index < 0) {
+            return null;
+        }
         int switchNumber = switchNumberGet((nextFirst + 1) + index);
 
         return items[switchNumber];
@@ -140,13 +154,13 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
         int total = (int) (items.length * multiplier);
         T[] newItems = (T[]) new Object[total];
         for (int i = nextLast - 1; i >= 0; i--) {
-            if (items[i] != null)
-                newItems[i] = items[i];
+            if (items[i] != null) newItems[i] = items[i];
         }
         int newItemsLast = newItems.length - 1;
         for (int i = items.length - 1; i > nextFirst; i--) {
-            if (items[i] != null)
+            if (items[i] != null) {
                 newItems[newItemsLast] = items[i];
+            }
             newItemsLast--;
         }
         nextFirst = newItemsLast;
@@ -156,7 +170,9 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
     private boolean checkOutRange() {
         if (nextFirst < nextLast) {
             for (int j = nextLast; j < nextFirst; j++) {
-                if (items[j] != null) return false;
+                if (items[j] != null) {
+                    return false;
+                }
             }
             return true;
         }
@@ -184,10 +200,11 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
             int oldItemsFirst = switchNumberGet(0);
             for (int i = 0; i < nextLast; i++) {
                 int switchNumber = switchNumberSet(i, newItems);
-                if (i != switchNumber)
+                if (i != switchNumber) {
                     newItems[switchNumber] = items[oldItemsFirst];
-                else
+                } else {
                     newItems[i] = items[oldItemsFirst];
+                }
                 oldItemsFirst++;
             }
             nextLast = oldItemsFirst;
@@ -200,16 +217,15 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
             else currentNextLast = nextLast;
             for (int i = newItems.length - 1; i > currentNextLast; i--) {
                 int switchNumber = switchNumberSet(i, newItems);
-                if (i != switchNumber)
-                    newItems[switchNumber] = items[oldItemsLast];
-                else
-                    newItems[i] = items[oldItemsLast];
+                if (i != switchNumber) newItems[switchNumber] = items[oldItemsLast];
+                else newItems[i] = items[oldItemsLast];
                 oldItemsLast--;
             }
-            if (!toRightRange)
+            if (!toRightRange) {
                 nextFirst = newItems.length - (items.length - nextFirst);
-            else
+            } else {
                 nextLast = oldItemsLast;
+            }
         }
         items = newItems;
     }
@@ -236,14 +252,22 @@ public class ArrayDeque<T> implements Iterable<T>, Deque<T> {
 
     @Override
     public boolean equals(Object o) {
-        if (o == null) return false;
-        if (!(o instanceof Deque)) return false;
-        if (this.size() != ((Deque<?>) o).size()) return false;
+        if (o == null) {
+            return false;
+        }
+        if (!(o instanceof Deque)) {
+            return false;
+        }
+        if (this.size() != ((Deque<?>) o).size()) {
+            return false;
+        }
         Deque<T> check = ((Deque<T>) o);
         for (int i = 0; i < size(); i++) {
             T self = this.get(i);
             T other = check.get(i);
-            if (self != other) return false;
+            if (self != other) {
+                return false;
+            }
         }
         return true;
     }
