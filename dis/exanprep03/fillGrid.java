@@ -15,7 +15,7 @@ public class fillGrid {
                 { 0, 0, 0, 0, 0},
                 { 0, 0, 0, 0, 0}
         };
-        fillGrid(LL, UR, S);
+        fillTheGrid(LL, UR, S);
         int [][] Target= {
                 { 0, 11, 12, 13, 14 },
                 { 1,  0, 15, 16, 17 },
@@ -24,7 +24,7 @@ public class fillGrid {
                 { 7,  8,  9, 10,  0 }
         };
     }
-    private static void fillGrid(int[] LL, int[] UR, int[][] S){
+    private static void fillTheGrid(int[] LL, int[] UR, int[][] S){
         int N = S.length;
         int kL, kR;
         kL = kR = 0;
