@@ -52,9 +52,13 @@ public class CapersRepository {
     public static void writeStory(String text) {
         // TODO
         File story=Utils.join(CAPERS_FOLDER,"story");
-        String rest=Utils.readContentsAsString(story);
-        Utils.writeContents(story,rest+"\n"+text);
-        System.out.println(Utils.readContentsAsString(story));
+        String read=Utils.readContentsAsString(story);
+        if(read.length()!=0){
+            read+="\n";
+        }
+        Utils.writeContents(story,read,text);
+        String newRead=Utils.readContentsAsString(story);
+        System.out.println(newRead);
     }
 
     /**
