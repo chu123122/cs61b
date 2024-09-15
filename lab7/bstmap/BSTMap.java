@@ -2,6 +2,7 @@ package bstmap;
 
 import java.util.Iterator;
 import java.util.Set;
+import java.util.TreeSet;
 
 public class BSTMap<K extends Comparable<K>,V> implements Map61B<K,V>{
 
@@ -104,7 +105,15 @@ public class BSTMap<K extends Comparable<K>,V> implements Map61B<K,V>{
 
     @Override
     public Set<K> keySet() {
-        throw new UnsupportedOperationException();
+        Set<K> set=new TreeSet<>();
+        followAllNode(root,set);
+        return set;
+    }
+    private void followAllNode(BST<K,V> node,Set<K> set){
+        if(node==null)return;
+        set.add(node.key);
+        followAllNode(node.left,set);
+        followAllNode(node.right,set);
     }
 
     @Override
