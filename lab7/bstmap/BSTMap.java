@@ -115,11 +115,88 @@ public class BSTMap<K extends Comparable<K>,V> implements Map61B<K,V>{
         followAllNode(node.left,set);
         followAllNode(node.right,set);
     }
-
+    private BST<K,V> helper(BST<K,V> parent,K key){
+        if(parent.key.compareTo(key)>0){
+            return parent.left;
+        } else if (parent.key.compareTo(key)<0) {
+            return parent.right;
+        }
+        return parent;
+    }
     @Override
     public V remove(K key) {
-        throw new UnsupportedOperationException();
+        BST<K,V> deleteParent=root;
+        BST<K,V> delete=helper(root,key);
+        while(delete.key!=key){
+            deleteParent=helper(deleteParent,key);
+            delete=helper(deleteParent,key);
+            if(delete==null)return null;
+        }
+
+        int number=deleteParent.key.compareTo(delete.key);
+
+        if(delete.left!=null&&delete.right!=null){
+            BST<K,V> clearParent=delete;
+            BST<K,V> clear=delete.right;
+            while (clear.left!=null){
+                clear=clear.left;
+                clearParent=clearParent.left;
+            }
+            delete.key=clear.key;
+            delete.value=clear.value;
+
+            if(clearParent.left==clear){
+                clearParent.left=clear.right;
+            }else{
+                clearParent.right=clear.right;
+            }
+
+        }else if(delete.left!=null){
+            if(number>0){
+                deleteParent.left=delete.left;
+                delete.left=null;
+            }
+            else if(number<0) {
+                deleteParent.right=delete.left;
+                delete.left=null;
+            }else{
+                root=delete.left;
+                delete.left=null;
+            }
+        }else if(delete.right!=null){
+            if(number>0){
+                deleteParent.left=delete.left;
+                delete.right=null;
+            }
+            else if(number<0){
+                deleteParent.right=delete.right;
+                delete.right=null;
+            }else{
+                root=delete.right;
+                delete.right=null;
+            }
+        }else{
+            if(number>0)deleteParent.left=null;
+            else if(number<0) deleteParent.right=null;
+            else root=null;
+        }
+        size-=1;
+        return delete.value;
     }
+
+//    private void deleteNode(BST<K,V> deleteParent,BST<K,V> delete){
+//        if(delete.left!=null&&delete.right!=null){
+//
+//        } else if (delete.left!=null) {
+//            deleteParent=delete.left;
+//            delete.left=null;
+//        }else if (delete.right!=null) {
+//            deleteParent=delete.right;
+//            delete.right=null;
+//        }else{
+//            deleteParent=null;
+//        }
+//    }
 
     @Override
     public V remove(K key, V value) {
