@@ -4,29 +4,31 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class BSTMap<K extends Comparable<K>,V> implements Map61B<K,V>{
+public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
 
-    private BST<K,V> root;
+    private BST<K, V> root;
     private int size;
-    public BSTMap(){
-        size=0;
+
+    public BSTMap() {
+        size = 0;
     }
+
     @Override
     public void clear() {
-        root=null;
-        size=0;
+        root = null;
+        size = 0;
     }
 
     @Override
     public boolean containsKey(K key) {
-        if(root==null)return false;
-        BST<K,V> check=root;
-        while(check!=null){
-            if(check.key.compareTo(key)>0){
-                check=check.left;
-            } else if (check.key.compareTo(key)<0) {
-                check=check.right;
-            }else{
+        if (root == null) return false;
+        BST<K, V> check = root;
+        while (check != null) {
+            if (check.key.compareTo(key) > 0) {
+                check = check.left;
+            } else if (check.key.compareTo(key) < 0) {
+                check = check.right;
+            } else {
                 return true;
             }
         }
@@ -35,15 +37,15 @@ public class BSTMap<K extends Comparable<K>,V> implements Map61B<K,V>{
 
     @Override
     public V get(K key) {
-        if(root==null)return null;
-        BST<K,V> check=root;
-        while(check!=null){
-            int size=check.key.compareTo(key);
-            if(size>0){
-                check=check.left;
-            } else if (size<0) {
-                check=check.right;
-            }else{
+        if (root == null) return null;
+        BST<K, V> check = root;
+        while (check != null) {
+            int size = check.key.compareTo(key);
+            if (size > 0) {
+                check = check.left;
+            } else if (size < 0) {
+                check = check.right;
+            } else {
                 return check.value;
             }
         }
@@ -58,153 +60,145 @@ public class BSTMap<K extends Comparable<K>,V> implements Map61B<K,V>{
     @Override
     public void put(K key, V value) {
         size++;
-        if(root==null){
-            root=new BST<>(key,value);
+        if (root == null) {
+            root = new BST<>(key, value);
             return;
         }
-        BST<K,V> check=root;
-        while(check!=null){
-            int size=check.key.compareTo(key);
-            if(size>0){
-                if(check.left==null){
-                    check.left=new BST<>(key,value);
+        BST<K, V> check = root;
+        while (check != null) {
+            int size = check.key.compareTo(key);
+            if (size > 0) {
+                if (check.left == null) {
+                    check.left = new BST<>(key, value);
                     break;
                 }
-                check=check.left;
-            } else if (size<0) {
-                if(check.right==null){
-                    check.right=new BST<>(key,value);
+                check = check.left;
+            } else if (size < 0) {
+                if (check.right == null) {
+                    check.right = new BST<>(key, value);
                     break;
                 }
-                check=check.right;
-            }else{
-                check.value=value;
+                check = check.right;
+            } else {
+                check.value = value;
                 break;
             }
         }
     }
 
-    public void printInOrder(){
-        BST<K,V> check=root;
-        while(check!=null){
+    public void printInOrder() {
+        BST<K, V> check = root;
+        while (check != null) {
             System.out.println(check.value);
-            check=check.right;
+            check = check.right;
         }
     }
 
-    class BST<K extends Comparable<K>,V>{
+    class BST<K extends Comparable<K>, V> {
         public K key;
         public V value;
-        public BST<K,V> left;
-        public BST<K,V> right;
-        public BST( K key,V value){
-            this.key=key;
-            this.value=value;
+        public BST<K, V> left;
+        public BST<K, V> right;
+
+        public BST(K key, V value) {
+            this.key = key;
+            this.value = value;
         }
     }
 
     @Override
     public Set<K> keySet() {
-        Set<K> set=new TreeSet<>();
-        followAllNode(root,set);
+        Set<K> set = new TreeSet<>();
+        followAllNode(root, set);
         return set;
     }
-    private void followAllNode(BST<K,V> node,Set<K> set){
-        if(node==null)return;
+
+    private void followAllNode(BST<K, V> node, Set<K> set) {
+        if (node == null) return;
         set.add(node.key);
-        followAllNode(node.left,set);
-        followAllNode(node.right,set);
-    }
-    private BST<K,V> helper(BST<K,V> parent,K key){
-        if(parent.key.compareTo(key)>0){
-            return parent.left;
-        } else if (parent.key.compareTo(key)<0) {
-            return parent.right;
-        }
-        return parent;
+        followAllNode(node.left, set);
+        followAllNode(node.right, set);
     }
     @Override
     public V remove(K key) {
-        BST<K,V> deleteParent=root;
-        BST<K,V> delete=helper(root,key);
-        while(delete.key!=key){
-            deleteParent=helper(deleteParent,key);
-            delete=helper(deleteParent,key);
-            if(delete==null)return null;
+        if (root == null) return null;
+
+        BST<K, V> parent = null;
+        BST<K, V> current = root;
+
+        while (current != null && !current.key.equals(key)) {
+            parent = current;
+            current = current.key.compareTo(key) > 0 ? current.right : current.left;
         }
 
-        int number=deleteParent.key.compareTo(delete.key);
+        if (current == null) return null;
 
-        if(delete.left!=null&&delete.right!=null){
-            BST<K,V> clearParent=delete;
-            BST<K,V> clear=delete.right;
-            while (clear.left!=null){
-                clear=clear.left;
-                clearParent=clearParent.left;
-            }
-            delete.key=clear.key;
-            delete.value=clear.value;
+        V removedValue = current.value;
 
-            if(clearParent.left==clear){
-                clearParent.left=clear.right;
-            }else{
-                clearParent.right=clear.right;
+        if (current.left == null && current.right == null) { //删除节点无子节点
+            if (parent == null) {
+                root = null;
+            } else if (parent.left == current) {
+                parent.left = null;
+            } else {
+                parent.right = null;
             }
-
-        }else if(delete.left!=null){
-            if(number>0){
-                deleteParent.left=delete.left;
-                delete.left=null;
+        } else if (current.left == null) { //删除节点有右子节点
+            if (parent == null) {
+                root = current.right;
+            } else if (parent.left == current) {
+                parent.left = current.right;
+            } else {
+                parent.right = current.right;
             }
-            else if(number<0) {
-                deleteParent.right=delete.left;
-                delete.left=null;
-            }else{
-                root=delete.left;
-                delete.left=null;
+        } else if (current.right == null) {//删除节点有左子节点
+            if (parent == null) {
+                root = current.left;
+            } else if (parent.left == current) {
+                parent.left = current.left;
+            } else {
+                parent.right = current.left;
             }
-        }else if(delete.right!=null){
-            if(number>0){
-                deleteParent.left=delete.left;
-                delete.right=null;
-            }
-            else if(number<0){
-                deleteParent.right=delete.right;
-                delete.right=null;
-            }else{
-                root=delete.right;
-                delete.right=null;
-            }
-        }else{
-            if(number>0)deleteParent.left=null;
-            else if(number<0) deleteParent.right=null;
-            else root=null;
+        } else {//删除节点有左右子节点
+            BST<K, V> successor = findMin(current.right);
+            K successorKey = successor.key;
+            V successorValue = successor.value;
+            remove(successorKey);
+            current.key = successorKey;
+            current.value = successorValue;
         }
-        size-=1;
-        return delete.value;
+        size--;
+        return removedValue;
     }
 
-//    private void deleteNode(BST<K,V> deleteParent,BST<K,V> delete){
-//        if(delete.left!=null&&delete.right!=null){
-//
-//        } else if (delete.left!=null) {
-//            deleteParent=delete.left;
-//            delete.left=null;
-//        }else if (delete.right!=null) {
-//            deleteParent=delete.right;
-//            delete.right=null;
-//        }else{
-//            deleteParent=null;
-//        }
-//    }
+    private BST<K, V> findMin(BST<K, V> node) {
+        while (node.left != null) {
+            node = node.left;
+        }
+        return node;
+    }
 
     @Override
     public V remove(K key, V value) {
-        throw new UnsupportedOperationException();
+        if (root == null) return null;
+
+        BST<K, V> parent = null;
+        BST<K, V> current = root;
+
+        while (current != null && !current.key.equals(key)) {
+            parent = current;
+            current = current.key.compareTo(key) > 0 ? current.right : current.left;
+        }
+
+        if (current == null) return null;
+
+        V removedValue = current.value;
+        if(removedValue.equals(value))return null;
+        return remove(key);
     }
 
     @Override
     public Iterator<K> iterator() {
-        throw new UnsupportedOperationException();
+       throw new UnsupportedOperationException();
     }
 }
