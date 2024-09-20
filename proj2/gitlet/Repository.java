@@ -1,6 +1,8 @@
 package gitlet;
 
 import java.io.File;
+import java.util.List;
+
 import static gitlet.Utils.*;
 
 // TODO: any imports you need here
@@ -9,7 +11,7 @@ import static gitlet.Utils.*;
  *  TODO: It's a good idea to give a description here of what else this Class
  *  does at a high level.
  *
- *  @author TODO
+ *  @author chu123122
  */
 public class Repository {
     /**
@@ -25,5 +27,44 @@ public class Repository {
     /** The .gitlet directory. */
     public static final File GITLET_DIR = join(CWD, ".gitlet");
 
+    /** 存储暂存区域（staged）的文件夹. */
+    public static final File STAGED_DIR = Utils.join(Repository.GITLET_DIR, "staged");
+    /** 存储所有历史commit的文件副本的文件夹. */
+    public static final File BLOBS_DIR = Utils.join(Repository.GITLET_DIR, "blobs");
+    /** 存储所有提交的历史记录. */
+    public static final File COMMITS_DIR = Utils.join(Repository.GITLET_DIR, "commits");//双向链表存储
+
     /* TODO: fill in the rest of this class. */
+    public static void setupPersistence(){
+        boolean hasInit=GITLET_DIR.exists();
+        if(hasInit){
+            message("A Gitlet version-control system already exists in the current directory.");
+            return;
+        }
+        //初始化文件夹
+        new Init().makeAllDir();
+        //初始化提交
+        String string=" 00:00:00 UTC, Thursday, 1 January 1970";
+        String shaCode=sha1(string);
+        Commit initCommit=new Commit(string,shaCode,null,null);
+        initCommit.submitCommit();
+    }
+
+    public static void refreshStagedDir(){
+
+    }
+
+    public static void addGitLet(String fileName){
+        List<String> stagedFiles=plainFilenamesIn(STAGED_DIR);
+        if(!stagedFiles.contains(fileName)){
+            message("File does not exist.");
+            return;
+        }
+        File addFile=join(STAGED_DIR,fileName);
+        new Add().addStageFile(addFile);
+    }
+
+    public static void commitGitLet(){
+        Commit HEAD=Commit.HEAD;
+    }
 }
