@@ -5,20 +5,26 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
+/**
+ * 提交一个文件到staged文件夹
+ */
 public class Add {
-    public static final File BLOBS_DIR = Repository.BLOBS_DIR;
-    public static int number=0;
+    /**
+     * 存储地址
+     */
+    public static final File STAGED_DIR = Repository.STAGED_DIR;
 
-    /** 添加文件的副本到blobs文件夹里面 */
-    public void addStageFile(File file){
+    /**
+     * 添加文件的副本到staged文件夹里面
+     */
+    public void addStageFile(File file) {
         try {
-            File blob=Utils.join(BLOBS_DIR,Integer.toString(number));
-            Files.copy(file.toPath(),blob.toPath(), StandardCopyOption.COPY_ATTRIBUTES);
+            File blob = Utils.join(STAGED_DIR, file.getName());
+            Files.copy(file.toPath(), blob.toPath(), StandardCopyOption.COPY_ATTRIBUTES);
 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        number++;
         file.delete();
     }
 

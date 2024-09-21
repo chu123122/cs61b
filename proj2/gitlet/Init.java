@@ -1,8 +1,14 @@
 package gitlet;
 
 import java.io.File;
-
+/**
+ * 对gitlet初始化
+ * */
 public class Init {
+    /**
+     * .gitlet文件夹
+     */
+    public static final File GITLET_DIR = Repository.GITLET_DIR;
     /**
      * 存储暂存区域（staged）的文件夹
      */
@@ -14,13 +20,13 @@ public class Init {
     /**
      * 存储所有提交的历史记录
      */
-    public static final File COMMITS_DIR = Repository.COMMITS_DIR;//双向链表存储
+    public static final File COMMITS_DIR = Repository.COMMITS_DIR;
 
     /**
      * 创建所有需要的文件夹
      */
     public void makeAllDir() {
-        Repository.GITLET_DIR.mkdir();
+        GITLET_DIR.mkdir();
         STAGED_DIR.mkdir();
         BLOBS_DIR.mkdir();
         COMMITS_DIR.mkdir();

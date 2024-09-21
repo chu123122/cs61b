@@ -10,7 +10,7 @@ import java.util.Date; // TODO: You'll likely use this in this class
  * Represents a gitlet commit object.
  *  TODO: It's a good idea to give a description here of what else this Class
  *  does at a high level.
- *
+ *  提供对一个指令的基本操作，以及HEAD、NEW的指针
  * @author TODO
  */
 public class Commit {
@@ -28,9 +28,10 @@ public class Commit {
     /** 提交链的最新提交指针 */
     public static Commit NEW;
     /** 当前commit的父提交 */
-    public Commit[] parents = new Commit[2];
+    private final Commit[] parents = new Commit[2];
     /** The message of this Commit. */
     private final String message;
+    /** 提交节点的SHA码 */
     private final String shaCode;
 
     /* TODO: fill in the rest of this class. */
@@ -45,8 +46,7 @@ public class Commit {
      * 新建一个提交到commits文件夹里
      */
     public void submitCommit() {
-        HEAD=this;//TODO:修改
-        NEW=this;
+        this.parents[0]=HEAD;
         File commit=Utils.join(COMMITS_DIR,shaCode);
         Utils.writeContents(commit,this);
         try {
@@ -54,6 +54,8 @@ public class Commit {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        HEAD=this;//TODO:修改
+        NEW=this;
     }
 
 }

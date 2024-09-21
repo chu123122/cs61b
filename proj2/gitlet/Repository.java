@@ -10,7 +10,7 @@ import static gitlet.Utils.*;
 /** Represents a gitlet repository.
  *  TODO: It's a good idea to give a description here of what else this Class
  *  does at a high level.
- *
+ *  提供所有对应指令的封装完善的方法
  *  @author chu123122
  */
 public class Repository {
@@ -30,6 +30,7 @@ public class Repository {
     /** 存储暂存区域（staged）的文件夹. */
     public static final File STAGED_DIR = Utils.join(Repository.GITLET_DIR, "staged");
     /** 存储所有历史commit的文件副本的文件夹. */
+    //TODO: 划分为不同commit的文件夹，但只存储同上一commit对比发生变化的文件
     public static final File BLOBS_DIR = Utils.join(Repository.GITLET_DIR, "blobs");
     /** 存储所有提交的历史记录. */
     public static final File COMMITS_DIR = Utils.join(Repository.GITLET_DIR, "commits");//双向链表存储
@@ -64,7 +65,4 @@ public class Repository {
         new Add().addStageFile(addFile);
     }
 
-    public static void commitGitLet(){
-        Commit HEAD=Commit.HEAD;
-    }
 }

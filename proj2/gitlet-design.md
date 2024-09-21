@@ -6,6 +6,7 @@
 
 ### Class 1
 
+
 #### Fields
 
 1. Field 1
@@ -23,4 +24,3 @@
 ## Algorithms
 
 ## Persistence
-
