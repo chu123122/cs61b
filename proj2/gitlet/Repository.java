@@ -43,17 +43,14 @@ public class Repository {
             return;
         }
         //初始化文件夹
-        new Init().makeAllDir();
+        Init.makeAllDir();
         //初始化提交
-        String string=" 00:00:00 UTC, Thursday, 1 January 1970";
-        String shaCode=sha1(string);
-        Commit initCommit=new Commit(string,shaCode,null,null);
+        String timeScale=" 00:00:00 UTC, Thursday, 1 January 1970";
+        String message="init commit";
+        Commit initCommit=new Commit(message, timeScale,null);
         initCommit.submitCommit();
     }
 
-    public static void refreshStagedDir(){
-
-    }
 
     public static void addGitLet(String fileName){
         List<String> stagedFiles=plainFilenamesIn(STAGED_DIR);

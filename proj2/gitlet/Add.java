@@ -10,22 +10,27 @@ import java.nio.file.StandardCopyOption;
  */
 public class Add {
     /**
-     * 存储地址
+     * staged存储地址
      */
     public static final File STAGED_DIR = Repository.STAGED_DIR;
+    /**
+     * blobs存储地址
+     */
+    public static final File BLOBS_DIR = Repository.BLOBS_DIR;
 
     /**
      * 添加文件的副本到staged文件夹里面
      */
     public void addStageFile(File file) {
+        String sha1=Utils.sha1(file);
         try {
-            File blob = Utils.join(STAGED_DIR, file.getName());
-            Files.copy(file.toPath(), blob.toPath(), StandardCopyOption.COPY_ATTRIBUTES);
-
+            File staged = Utils.join(STAGED_DIR,file.getName());//staged文件夹的备份
+            File blobs = Utils.join(BLOBS_DIR,sha1);//blobs文件夹的备份（用sha1码）
+            Files.copy(file.toPath(), staged.toPath(), StandardCopyOption.COPY_ATTRIBUTES);
+            Files.copy(file.toPath(), blobs.toPath(), StandardCopyOption.COPY_ATTRIBUTES);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        file.delete();
     }
 
 }

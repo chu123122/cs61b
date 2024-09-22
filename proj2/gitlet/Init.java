@@ -25,7 +25,7 @@ public class Init {
     /**
      * 创建所有需要的文件夹
      */
-    public void makeAllDir() {
+    public static void makeAllDir() {
         GITLET_DIR.mkdir();
         STAGED_DIR.mkdir();
         BLOBS_DIR.mkdir();
