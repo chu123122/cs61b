@@ -105,10 +105,10 @@ add -----添加CWD里面的文件的副本到`staged`里面
 
 commit -----序列化一个commit文件到`commits`里面
 
-疑问：
+流程：
 
-1. add要不要添加副本到`blobs`里面
+1. init，创建`.gitlet`,`staged` ,`commits` ,`blobs`文件夹，同时提交一个初始提交
 
-2. `staged`里面的文件如何命名？
+2. add，添加对应文件到`staged`文件夹（原名）和`blobs` 文件夹（sha1名）
 
-3. 复制前一个commit的所有引用，再更新`staged` 区域的文件，但是如何找到对应的？（字典？）
+3. commit，复制上一个commit（仅`blobs` 相同），提交时更新`blobs` （从`staged` 文件夹里查询所有与`bolos` key相同的文件，更新其sha1码，从而可以获取到其在`blobs` 里的sha1码名称的文件存储）将其序列化写入用其sha1码为名的文件中存储到`commits`文件夹里。***问题：如果修改了文件的名称，文件原版本和改名版本都会在中commit存在***

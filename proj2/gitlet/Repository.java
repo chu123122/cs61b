@@ -51,15 +51,30 @@ public class Repository {
         initCommit.submitCommit();
     }
 
-
     public static void addGitLet(String fileName){
-        List<String> stagedFiles=plainFilenamesIn(STAGED_DIR);
-        if(!stagedFiles.contains(fileName)){
+        List<String> cwdDic=plainFilenamesIn(CWD);
+        if(!cwdDic.contains(fileName)){
             message("File does not exist.");
             return;
         }
         File addFile=join(STAGED_DIR,fileName);
-        new Add().addStageFile(addFile);
+        Add.addStageFile(addFile);
+    }
+
+    public static void commitGitLet(String message){
+        String timeScale=String.valueOf(System.currentTimeMillis());
+        Commit commit=Commit.getNewFromHEAD(message,timeScale);
+        commit.submitCommit();
+        cleanStagedDic();
+    }
+
+
+    private static void cleanStagedDic(){
+        List<String> stagedDic=plainFilenamesIn(STAGED_DIR);
+        for (String name:stagedDic) {
+            File file=Utils.join(STAGED_DIR,name);
+            file.delete();
+        }
     }
 
 }

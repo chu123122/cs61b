@@ -31,4 +31,10 @@ public class Init {
         BLOBS_DIR.mkdir();
         COMMITS_DIR.mkdir();
     }
+    /**
+    * 设置
+    * */
+    public static void setDefault(){
+
+    }
 }

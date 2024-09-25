@@ -21,8 +21,8 @@ public class Add {
     /**
      * 添加文件的副本到staged文件夹里面
      */
-    public void addStageFile(File file) {
-        String sha1=Utils.sha1(file);
+    public static void addStageFile(File file) {
+        String sha1=Utils.sha1(file.toString());
         try {
             File staged = Utils.join(STAGED_DIR,file.getName());//staged文件夹的备份
             File blobs = Utils.join(BLOBS_DIR,sha1);//blobs文件夹的备份（用sha1码）

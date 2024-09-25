@@ -5,6 +5,8 @@ package gitlet;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,9 +31,9 @@ public class Commit implements Serializable {
     /** staged的总文件夹 */
     private static final File STAGED_DIR=Repository.STAGED_DIR;
     /** 提交链的HEAD指针（当前指针） */
-    public static Commit HEAD;
+    public static final String HEAD="HEAD";
     /** 提交链的最新提交指针 */
-    public static Commit NEW;
+    //public static String NEW;
     /** 当前commit的父提交 */
     private final String parent;
     /** The message of this Commit. */
@@ -54,26 +56,44 @@ public class Commit implements Serializable {
      */
     public void submitCommit() {
         refreshBlobs();
-        String sha1=Utils.sha1(this);
+        String sha1=Utils.sha1(this.toString());
         File commit=Utils.join(COMMITS_DIR,sha1);
-        Utils.writeContents(commit,this);
+        Utils.writeObject(commit,this);
         try {
             commit.createNewFile();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        HEAD=this;//TODO:修改
-        NEW=this;
+        setTheHEAD(commit);
+    }
+    private void setTheHEAD(File commit){
+        File headCommit=Utils.join(COMMITS_DIR,"HEAD");
+        try {
+            Files.copy(commit.toPath(),headCommit.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
     /** 依据staged里的文件更新当前commit的blobs引用，已存在的更新，不存在的添加 */
     private void refreshBlobs(){
         List<String> keys=Utils.plainFilenamesIn(STAGED_DIR);//staged文件夹里add的文件
+        if(keys==null)throw new RuntimeException("staged don't have the target files");
         for (String key:keys) {
             File keyFile=Utils.join(STAGED_DIR,key);
-            String sha1=Utils.sha1(keyFile);
+            String sha1=Utils.sha1(keyFile.toString());
             if(blobs.containsKey(key))blobs.replace(key,sha1);//如果存在则更新，反之添加
             else blobs.put(key,sha1);
         }
+    }
+    /**
+     * 返回一个blobs继承自HEAD的commit
+     * */
+    public static Commit getNewFromHEAD(String message, String timeScale){
+        return new Commit(message,timeScale,HEAD);
+    }
+    public static Commit getHEAD(){
+        File headFile=Utils.join(COMMITS_DIR,HEAD);
+        return Utils.readObject(headFile, Commit.class);
     }
 
     public Commit parent(){
