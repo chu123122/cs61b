@@ -52,7 +52,7 @@
 
 #### Add
 
-复制`add [fileName]` 命令中的`[fileName]`文件的一份副本到`staged`和`blobs` 文件夹中
+复制`add [fileName]` 命令中的`[fileName]`文件的一份副本到`staged`和`blobs` 文件夹中（注意：用`CWD` 文件夹的sha1码命名）
 
 #### Field
 
@@ -63,7 +63,7 @@
 
 #### Commit
 
-新建一个节点，引用继承自父节点的引用，提交时，依据`staged` 文件夹里的文件更新/添加`blobs`里的引用，同时设置，`HEAD` 和`NEW` 为当前节点
+新建一个节点，引用继承自父节点的引用，提交时，依据`staged` 文件夹里的文件更新/添加`blobs`里的引用（注意：用`CWD` 中与`staged` 中的文件相同的文件的sha1码），同时设置，`HEAD` 和`NEW` 为当前节点
 
 #### Field
 
@@ -81,7 +81,17 @@
 
 7. `private final String timescale`  该commit的时间戳
 
-8. `private final Map<String,String> blobs`  该commit的保存的所有文件名称和对应引用（sha1码表示引用）
+8. `private final Map<String,String> blobs`  该commit的保存的所有文件名称和对应引用（sha1码表示引用）`
+
+---
+
+#### CheckOut
+
+依据`commitId` ，`fileName` 回溯`CWD`中的同名文件在该分支的特定文件版本
+
+#### Field
+
+`private static final File CWD`  当前工作的文件夹
 
 ---
 

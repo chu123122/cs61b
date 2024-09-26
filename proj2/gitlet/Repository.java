@@ -37,6 +37,9 @@ public class Repository {
 
 
     /* TODO: fill in the rest of this class. */
+    /**
+     * init指令对应方法
+     * */
     public static void setupPersistence(){
         boolean hasInit=GITLET_DIR.exists();
         if(hasInit){
@@ -51,7 +54,9 @@ public class Repository {
         Commit initCommit=new Commit(message, timeScale,null);
         initCommit.submitCommit();
     }
-
+    /**
+     * add指令对应方法
+     * */
     public static void addGitLet(String fileName){
         List<String> cwdDic=plainFilenamesIn(CWD);
         if(!cwdDic.contains(fileName)){
@@ -61,14 +66,18 @@ public class Repository {
         File addFile=join(CWD,fileName);
         Add.addStageFile(addFile);
     }
-
+    /**
+     * commit指令对应方法
+     * */
     public static void commitGitLet(String message){
         String timeScale=String.valueOf(System.currentTimeMillis());
         Commit commit=Commit.getNewFromHEAD(message,timeScale);
         commit.submitCommit();
         cleanStagedDic();
     }
-
+    /**
+     * checkout指令对应方法
+     * */
     public static void checkOutGitLet(String commitId,String fileName){
         Commit commit=Commit.findCommitWithName(commitId);
         if(commit==null){
@@ -78,7 +87,9 @@ public class Repository {
         CheckOut.checkOutTheFile(commit,fileName);
     }
 
-
+    /**
+     * 删除staged文件夹里所有文件
+     * */
     private static void cleanStagedDic(){
         List<String> stagedDic=plainFilenamesIn(STAGED_DIR);
         for (String name:stagedDic) {
