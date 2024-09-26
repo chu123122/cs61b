@@ -30,8 +30,9 @@ public class Commit implements Serializable {
     private static final File COMMITS_DIR = Repository.COMMITS_DIR;
     /** staged的总文件夹 */
     private static final File STAGED_DIR=Repository.STAGED_DIR;
+    private static final File BLOBS_DIR=Repository.BLOBS_DIR;
     /** 提交链的HEAD指针（当前指针） */
-    public static final String HEAD="HEAD";
+    private static final String HEAD="HEAD";
     /** 提交链的最新提交指针 */
     //public static String NEW;
     /** 当前commit的父提交 */
@@ -43,13 +44,25 @@ public class Commit implements Serializable {
     /** 每个节点的所有文件的引用 */
     private final Map<String,String> blobs;
 
+
     /* TODO: fill in the rest of this class. */
+    /**
+     * 构造函数
+     * */
     public Commit(String message, String timeScale,String parent){
         this.message=message;
         this.timeScale = timeScale;
         this.parent=parent;
         if(this.parent!=null)this.blobs=this.parent().blobs;
         else this.blobs=new HashMap<>();
+    }
+    /**
+    * 从当前Commit的Blobs中获取其在BLOBS_DIR文件夹里面的文件名（sha1码）
+    * */
+    public File findFileInBlobs(String fileName){
+        String sha1=blobs.get(fileName);
+        if(sha1==null)return null;
+        return Utils.join(BLOBS_DIR,sha1);
     }
     /**
      * 新建一个序列化自身后的文件到commits文件夹，用自身的sha1码命名
@@ -91,9 +104,23 @@ public class Commit implements Serializable {
     public static Commit getNewFromHEAD(String message, String timeScale){
         return new Commit(message,timeScale,HEAD);
     }
+    /**
+     * 返回HEAD（Commit）
+    * */
     public static Commit getHEAD(){
         File headFile=Utils.join(COMMITS_DIR,HEAD);
         return Utils.readObject(headFile, Commit.class);
+    }
+
+    public static Commit findCommitWithName(String commitId){
+        List<String> commitIds=Utils.plainFilenamesIn(COMMITS_DIR);
+        for (String sha1:commitIds) {
+            if(sha1.equals(commitId)){
+                File commit=Utils.join(COMMITS_DIR,commitId);
+                return Utils.readObject(commit, Commit.class);
+            }
+        }
+        return null;
     }
 
     public Commit parent(){

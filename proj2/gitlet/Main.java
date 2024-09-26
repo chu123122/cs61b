@@ -10,7 +10,6 @@ import java.io.File;
  */
 public class Main {
 
-    private static final File CWD = Repository.CWD;
 
     /**
      * Usage: java gitlet.Main ARGS, where ARGS contains
@@ -19,7 +18,6 @@ public class Main {
     public static void main(String[] args) {
         // TODO: what if args is empty?
         Init.setDefault();
-
         String firstArg = args[0];
         switch (firstArg) {
             case "init":
@@ -35,6 +33,15 @@ public class Main {
             case "commit":
                 String message = args[1];
                 Repository.commitGitLet(message);
+                break;
+            case "checkout":
+                if(args.length==3){
+                    Repository.checkOutGitLet("HEAD",args[2]);
+                } else if (args.length==4) {
+                    Repository.checkOutGitLet(args[1],args[3]);
+                }/*else if(args.length==2){
+
+                }*/
                 break;
         }
         return;

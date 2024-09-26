@@ -35,6 +35,7 @@ public class Repository {
     /** 存储所有提交的历史记录. */
     public static final File COMMITS_DIR = Utils.join(Repository.GITLET_DIR, "commits");//双向链表存储
 
+
     /* TODO: fill in the rest of this class. */
     public static void setupPersistence(){
         boolean hasInit=GITLET_DIR.exists();
@@ -66,6 +67,15 @@ public class Repository {
         Commit commit=Commit.getNewFromHEAD(message,timeScale);
         commit.submitCommit();
         cleanStagedDic();
+    }
+
+    public static void checkOutGitLet(String commitId,String fileName){
+        Commit commit=Commit.findCommitWithName(commitId);
+        if(commit==null){
+            Utils.message("No commit with that id exists.");
+            return;
+        }
+        CheckOut.checkOutTheFile(commit,fileName);
     }
 
 

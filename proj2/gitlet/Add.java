@@ -23,13 +23,13 @@ public class Add {
      */
     public static void addStageFile(File file) {
         String sha1=Utils.sha1(file.toString());
+        File staged = Utils.join(STAGED_DIR,file.getName());//staged文件夹的备份
+        File blobs = Utils.join(BLOBS_DIR,sha1);//blobs文件夹的备份（用sha1码）
         try {
-            File staged = Utils.join(STAGED_DIR,file.getName());//staged文件夹的备份
-            File blobs = Utils.join(BLOBS_DIR,sha1);//blobs文件夹的备份（用sha1码）
             Files.copy(file.toPath(), staged.toPath(), StandardCopyOption.COPY_ATTRIBUTES);
             Files.copy(file.toPath(), blobs.toPath(), StandardCopyOption.COPY_ATTRIBUTES);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw Utils.error("文件复制出现问题");
         }
     }
 

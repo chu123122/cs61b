@@ -34,8 +34,8 @@ public class CapersRepository {
      */
     public static void setupPersistence() {
         // TODO
-        CAPERS_FOLDER.mkdir();
-        Dog.DOG_FOLDER.mkdir();
+        boolean n=CAPERS_FOLDER.mkdir();
+        boolean n2=Dog.DOG_FOLDER.mkdir();
         File story=Utils.join(CAPERS_FOLDER,"story");
         try {
             story.createNewFile();

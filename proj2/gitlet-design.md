@@ -111,4 +111,4 @@ commit -----序列化一个commit文件到`commits`里面
 
 2. add，添加对应文件到`staged`文件夹（原名）和`blobs` 文件夹（sha1名）
 
-3. commit，复制上一个commit（仅`blobs` 相同），提交时更新`blobs` （从`staged` 文件夹里查询所有与`bolos` key相同的文件，更新其sha1码，从而可以获取到其在`blobs` 里的sha1码名称的文件存储）将其序列化写入用其sha1码为名的文件中存储到`commits`文件夹里。***问题：如果修改了文件的名称，文件原版本和改名版本都会在中commit存在***
+3. commit，复制上一个commit（仅`blobs` 相同），提交时更新`blobs` （从`staged` 文件夹里查询所有与`bolos` key相同的文件，更新其sha1码，从而可以获取到其在`blobs` 里的sha1码名称的文件存储）将其序列化写入用其sha1码为名的文件中存储到`commits`文件夹里。   ***问题：如果修改了文件的名称，文件原版本和改名版本都会在中commit存在***
