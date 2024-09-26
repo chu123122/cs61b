@@ -58,7 +58,7 @@ public class Repository {
             message("File does not exist.");
             return;
         }
-        File addFile=join(STAGED_DIR,fileName);
+        File addFile=join(CWD,fileName);
         Add.addStageFile(addFile);
     }
 

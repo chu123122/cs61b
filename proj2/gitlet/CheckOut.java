@@ -14,11 +14,12 @@ public class CheckOut {
             Utils.message("File does not exist in that commit.");
             return;
         }
-        File copyFile=Utils.join(CWD,fileName);
+        File targerFile=Utils.join(CWD,fileName);
         try {
-            Files.copy(file.toPath(),copyFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(file.toPath(),targerFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             throw new RuntimeException(e);
+
         }
     }
 }

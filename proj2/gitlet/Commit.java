@@ -92,8 +92,8 @@ public class Commit implements Serializable {
         List<String> keys=Utils.plainFilenamesIn(STAGED_DIR);//staged文件夹里add的文件
         if(keys==null)throw new RuntimeException("staged don't have the target files");
         for (String key:keys) {
-            File keyFile=Utils.join(STAGED_DIR,key);
-            String sha1=Utils.sha1(keyFile.toString());
+            File originFile=Utils.join(Repository.CWD,key);
+            String sha1=Utils.sha1(originFile.toString());
             if(blobs.containsKey(key))blobs.replace(key,sha1);//如果存在则更新，反之添加
             else blobs.put(key,sha1);
         }
