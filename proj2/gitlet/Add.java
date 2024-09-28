@@ -23,7 +23,7 @@ public class Add {
      */
     public static void addStageFile(File file) {
         File staged = Utils.join(STAGED_DIR,file.getName());//staged文件夹的备份
-        String sha1=Utils.sha1(file.toString());
+        String sha1=Utils.sha1(Utils.readContentsAsString(file));
         File blobs = Utils.join(BLOBS_DIR,sha1);//blobs文件夹的备份（用sha1码）
         try {
             Files.copy(file.toPath(), staged.toPath(), StandardCopyOption.COPY_ATTRIBUTES);

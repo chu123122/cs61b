@@ -121,7 +121,7 @@ public class Commit implements Serializable {
         if (keys == null) throw new RuntimeException("staged don't have the target files");
         for (String key : keys) {
             File originFile = Utils.join(Repository.CWD, key);
-            String sha1 = Utils.sha1(originFile.toString());
+            String sha1 = Utils.sha1(Utils.readContentsAsString(originFile));
             if (blobs.containsKey(key)) blobs.replace(key, sha1);//如果存在则更新，反之添加
             else blobs.put(key, sha1);
         }

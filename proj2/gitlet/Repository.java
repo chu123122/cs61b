@@ -1,8 +1,11 @@
 package gitlet;
 
 import java.io.File;
-import java.util.Date;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 
 import static gitlet.Utils.*;
 
@@ -49,7 +52,7 @@ public class Repository {
         //初始化文件夹
         Init.makeAllDir();
         //初始化提交
-        String timeScale=" 00:00:00 UTC, Thursday, 1 January 1970";
+        String timeScale="Wed Dec 31 16:00:00 1969 -0800";
         String message="initial commit";
         Commit initCommit=new Commit(message, timeScale,null);
         initCommit.submitCommit();
@@ -70,8 +73,13 @@ public class Repository {
      * commit指令对应方法
      * */
     public static void commitGitLet(String message){
-        String timeScale=new Date().toString();
-        Commit commit=Commit.getNewFromHEAD(message,timeScale);
+        //获取当前的时间戳
+        ZoneOffset offset = ZoneOffset.ofHours(-8);
+        ZonedDateTime dateTime = ZonedDateTime.now(offset);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE MMM d HH:mm:ss yyyy Z", Locale.ENGLISH);
+        String formattedDate = dateTime.format(formatter);
+
+        Commit commit=Commit.getNewFromHEAD(message,formattedDate);
         commit.submitCommit();
         cleanStagedDic();
     }
