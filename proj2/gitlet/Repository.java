@@ -1,6 +1,7 @@
 package gitlet;
 
 import java.io.File;
+import java.util.Date;
 import java.util.List;
 
 import static gitlet.Utils.*;
@@ -35,7 +36,6 @@ public class Repository {
     /** 存储所有提交的历史记录. */
     public static final File COMMITS_DIR = Utils.join(Repository.GITLET_DIR, "commits");//双向链表存储
 
-
     /* TODO: fill in the rest of this class. */
     /**
      * init指令对应方法
@@ -50,7 +50,7 @@ public class Repository {
         Init.makeAllDir();
         //初始化提交
         String timeScale=" 00:00:00 UTC, Thursday, 1 January 1970";
-        String message="init commit";
+        String message="initial commit";
         Commit initCommit=new Commit(message, timeScale,null);
         initCommit.submitCommit();
     }
@@ -70,7 +70,7 @@ public class Repository {
      * commit指令对应方法
      * */
     public static void commitGitLet(String message){
-        String timeScale=String.valueOf(System.currentTimeMillis());
+        String timeScale=new Date().toString();
         Commit commit=Commit.getNewFromHEAD(message,timeScale);
         commit.submitCommit();
         cleanStagedDic();
@@ -87,6 +87,10 @@ public class Repository {
         CheckOut.checkOutTheFile(commit,fileName);
     }
 
+    public static void logGitLet(){
+        Log.logFollowTheCommitTree();
+    }
+
     /**
      * 删除staged文件夹里所有文件
      * */
@@ -97,5 +101,4 @@ public class Repository {
             file.delete();
         }
     }
-
 }

@@ -16,6 +16,7 @@ import java.util.Map;
  *  TODO: It's a good idea to give a description here of what else this Class
  *  does at a high level.
  *  提供对一个指令的基本操作，以及HEAD、NEW的指针
+ *
  * @author TODO
  */
 public class Commit implements Serializable {
@@ -26,114 +27,153 @@ public class Commit implements Serializable {
      * comment above them describing what that variable represents and how that
      * variable is used. We've provided one example for `message`.
      */
-    /** commits的总文件夹 */
+    /**
+     * commits的总文件夹
+     */
     private static final File COMMITS_DIR = Repository.COMMITS_DIR;
-    /** staged的总文件夹 */
-    private static final File STAGED_DIR=Repository.STAGED_DIR;
-    private static final File BLOBS_DIR=Repository.BLOBS_DIR;
-    /** 提交链的HEAD指针（当前指针） */
-    private static final String HEAD="HEAD";
+    /**
+     * staged的总文件夹
+     */
+    private static final File STAGED_DIR = Repository.STAGED_DIR;
+    private static final File BLOBS_DIR = Repository.BLOBS_DIR;
+    /**
+     * 提交链的HEAD指针（当前指针）
+     */
+    public static final String HEAD = "HEAD";
     /** 提交链的最新提交指针 */
     //public static String NEW;
-    /** 当前commit的父提交 */
+    /**
+     * 当前commit的父提交
+     */
     private final String parent;
-    /** The message of this Commit. */
+    /**
+     * The message of this Commit.
+     */
     private final String message;
-    /** 提交的节点的时间戳 */
+    /**
+     * 提交的节点的时间戳
+     */
     private final String timeScale;
-    /** 每个节点的所有文件的引用 */
-    private final Map<String,String> blobs;
+    /**
+     * 每个节点的所有文件的引用
+     */
+    private final Map<String, String> blobs;
+    private String sha1;
 
 
     /* TODO: fill in the rest of this class. */
+
     /**
      * 构造函数
-     * */
-    public Commit(String message, String timeScale,String parent){
-        this.message=message;
+     */
+    public Commit(String message, String timeScale, String parent) {
+        this.message = message;
         this.timeScale = timeScale;
-        this.parent=parent;
-        if(this.parent!=null)this.blobs=this.parent().blobs;
-        else this.blobs=new HashMap<>();
+        this.parent = parent;
+        if (this.parent != null) this.blobs = this.parent().blobs;
+        else this.blobs = new HashMap<>();
     }
+
     /**
-    * 从当前Commit的Blobs中获取其在BLOBS_DIR文件夹里面的文件名（sha1码）
-    * */
-    public File findFileInBlobs(String fileName){
-        String sha1=blobs.get(fileName);
-        if(sha1==null)return null;
-        return Utils.join(BLOBS_DIR,sha1);
+     * 从当前Commit的Blobs中获取其在BLOBS_DIR文件夹里面的文件名（sha1码）
+     */
+    public File findFileInBlobs(String fileName) {
+        String sha1 = blobs.get(fileName);
+        if (sha1 == null) return null;
+        return Utils.join(BLOBS_DIR, sha1);
     }
+
     /**
      * 新建一个序列化自身后的文件到commits文件夹，用自身的sha1码命名
      */
     public void submitCommit() {
-        refreshBlobs();
-        String sha1=Utils.sha1(this.toString());
-        File commit=Utils.join(COMMITS_DIR,sha1);
-        Utils.writeObject(commit,this);
+        refreshBlobs();//更新Blobs的引用
+        sha1 = Utils.sha1(this.toString());//更新SHA1的引用
+
+        File commit = Utils.join(COMMITS_DIR, sha1);
+        Utils.writeObject(commit, this);
         try {
             commit.createNewFile();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
         setTheHEAD(commit);
     }
-    private void setTheHEAD(File commit){
-        File headCommit=Utils.join(COMMITS_DIR,"HEAD");
+
+    /**
+     * 更新HEAD指针的文件的引用（文件名不变化，依旧HEAD）
+     */
+    private void setTheHEAD(File commit) {
+        File headCommit = Utils.join(COMMITS_DIR, HEAD);
         try {
-            Files.copy(commit.toPath(),headCommit.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(commit.toPath(), headCommit.toPath(), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
-    /** 依据staged里的文件更新当前commit的blobs引用，已存在的更新，不存在的添加 */
-    private void refreshBlobs(){
-        List<String> keys=Utils.plainFilenamesIn(STAGED_DIR);//staged文件夹里add的文件
-        if(keys==null)throw new RuntimeException("staged don't have the target files");
-        for (String key:keys) {
-            File originFile=Utils.join(Repository.CWD,key);
-            String sha1=Utils.sha1(originFile.toString());
-            if(blobs.containsKey(key))blobs.replace(key,sha1);//如果存在则更新，反之添加
-            else blobs.put(key,sha1);
+
+    /**
+     * 依据staged里的文件更新当前commit的blobs引用，已存在的更新，不存在的添加
+     */
+    private void refreshBlobs() {
+        List<String> keys = Utils.plainFilenamesIn(STAGED_DIR);//staged文件夹里add的文件
+        if (keys == null) throw new RuntimeException("staged don't have the target files");
+        for (String key : keys) {
+            File originFile = Utils.join(Repository.CWD, key);
+            String sha1 = Utils.sha1(originFile.toString());
+            if (blobs.containsKey(key)) blobs.replace(key, sha1);//如果存在则更新，反之添加
+            else blobs.put(key, sha1);
         }
     }
+
     /**
      * 返回一个blobs继承自HEAD的commit
-     * */
-    public static Commit getNewFromHEAD(String message, String timeScale){
-        return new Commit(message,timeScale,HEAD);
+     */
+    public static Commit getNewFromHEAD(String message, String timeScale) {
+        File HEADFile=Utils.join(COMMITS_DIR,HEAD);
+        Commit HEAD=Utils.readObject(HEADFile, Commit.class);
+        return new Commit(message, timeScale,HEAD.SHA1());
     }
+
     /**
      * 返回HEAD（Commit）
-    * */
-    public static Commit getHEAD(){
-        File headFile=Utils.join(COMMITS_DIR,HEAD);
+     */
+    public static Commit getHEAD() {
+        File headFile = Utils.join(COMMITS_DIR, HEAD);
         return Utils.readObject(headFile, Commit.class);
     }
 
-    public static Commit findCommitWithName(String commitId){
-        List<String> commitIds=Utils.plainFilenamesIn(COMMITS_DIR);
-        for (String sha1:commitIds) {
-            if(sha1.equals(commitId)){
-                File commit=Utils.join(COMMITS_DIR,commitId);
+    public static Commit findCommitWithName(String commitId) {
+        List<String> commitIds = Utils.plainFilenamesIn(COMMITS_DIR);
+        for (String sha1 : commitIds) {
+            if (sha1.equals(commitId)) {
+                File commit = Utils.join(COMMITS_DIR, commitId);
                 return Utils.readObject(commit, Commit.class);
             }
         }
         return null;
     }
 
-    public Commit parent(){
-        File commit=Utils.join(COMMITS_DIR,parent);
-        return Utils.readObject(commit,Commit.class);
+    public Commit parent() {
+        if(parent==null)return null;
+        File commit = Utils.join(COMMITS_DIR, parent);
+        return Utils.readObject(commit, Commit.class);
     }
-    public String message(){
+
+    public String SHA1() {
+        return sha1;
+    }
+
+    public String message() {
         return message;
     }
-    public String timeScale(){
+
+    public String timeScale() {
         return timeScale;
     }
-    public Map<String,String> blobs(){
+
+    public Map<String, String> blobs() {
         return blobs;
     }
 }

@@ -43,6 +43,9 @@ public class Main {
 
                 }*/
                 break;
+            case "log":
+                Repository.logGitLet();
+                break;
         }
         return;
     }
