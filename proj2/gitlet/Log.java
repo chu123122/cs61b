@@ -7,6 +7,7 @@ public class Log {
        Commit check=HEAD;
         while(check!=null){
             printlnCommit(check);
+            //if(check.parent().SHA1()==null||check.SHA1().equals(check.parent().SHA1()))break;
             check=check.parent();
         }
     }

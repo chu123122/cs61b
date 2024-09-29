@@ -91,9 +91,11 @@ public class Commit implements Serializable {
         sha1 = Utils.sha1(this.toString());//更新SHA1的引用
 
         File commit = Utils.join(COMMITS_DIR, sha1);
+
         Utils.writeObject(commit, this);
         try {
-            commit.createNewFile();
+            boolean create= commit.createNewFile();
+            if(create){}
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -175,5 +177,14 @@ public class Commit implements Serializable {
 
     public Map<String, String> blobs() {
         return blobs;
+    }
+    @Override
+    public String toString(){
+        return "Commit{" +
+                "message='" + message + '\'' +
+                ", timestamp=" + timeScale +
+                ", parentHash='" + parent + '\'' +
+                ", blobs=" + blobs +
+                '}';
     }
 }
