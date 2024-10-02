@@ -1,4 +1,6 @@
-package gitlet;
+package gitlet.operations;
+
+import gitlet.Repository;
 
 import java.io.File;
 /**
@@ -9,10 +11,13 @@ public class Init {
      * .gitlet文件夹
      */
     public static final File GITLET_DIR = Repository.GITLET_DIR;
+    public static final File STAGED_DIR = Repository.STAGED_DIR;
     /**
      * 存储暂存区域（staged）的文件夹
      */
-    public static final File STAGED_DIR = Repository.STAGED_DIR;
+    public static final File ADDED_DIR = Repository.ADDED_DIR;
+    public static final File REMOVED_DIR = Repository.REMOVED_DIR;
+
     /**
      * 存储所有历史commit的文件副本的文件夹
      */
@@ -30,6 +35,9 @@ public class Init {
         STAGED_DIR.mkdir();
         BLOBS_DIR.mkdir();
         COMMITS_DIR.mkdir();
+
+        ADDED_DIR.mkdir();
+        REMOVED_DIR.mkdir();
     }
     /**
     * 设置

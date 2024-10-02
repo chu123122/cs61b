@@ -1,4 +1,7 @@
-package gitlet;
+package gitlet.operations;
+
+import gitlet.Repository;
+import gitlet.Utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -6,7 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
 public class CheckOut {
-    private static final File CWD=Repository.CWD;
+    private static final File CWD= Repository.CWD;
 
     public static void checkOutTheFile(Commit commit, String fileName){
         File file=commit.findFileInBlobs(fileName);

@@ -1,5 +1,7 @@
 package gitlet;
 
+import gitlet.operations.*;
+
 import java.io.File;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -33,6 +35,9 @@ public class Repository {
 
     /** 存储暂存区域（staged）的文件夹. */
     public static final File STAGED_DIR = Utils.join(Repository.GITLET_DIR, "staged");
+    public static final File ADDED_DIR = Utils.join(Repository.STAGED_DIR, "added");
+    public static final File REMOVED_DIR = Utils.join(Repository.STAGED_DIR, "removed");
+
     /** 存储所有历史commit的文件副本的文件夹. */
     //TODO: 划分为不同commit的文件夹，但只存储同上一commit对比发生变化的文件
     public static final File BLOBS_DIR = Utils.join(Repository.GITLET_DIR, "blobs");
@@ -96,16 +101,30 @@ public class Repository {
     }
 
     public static void logGitLet(){
-        Log.logFollowTheCommitTree();
+        Log.log();
+    }
+
+    public static void rmGitLet(String fileName){
+        List<String> fileNameInAdded =Utils.plainFilenamesIn(ADDED_DIR);
+        assert fileNameInAdded != null;
+        for (String name:fileNameInAdded) {
+            //如果文件已经add
+            if(name.equals(fileName)){
+                Remove.unStagedFile(fileName);
+                return;
+            }
+        }
+        Remove.copyCWDToRemoval(fileName);
+        Remove.deleteCWDFile(fileName);
     }
 
     /**
      * 删除staged文件夹里所有文件
      * */
     private static void cleanStagedDic(){
-        List<String> stagedDic=plainFilenamesIn(STAGED_DIR);
+        List<String> stagedDic=plainFilenamesIn(ADDED_DIR);
         for (String name:stagedDic) {
-            File file=Utils.join(STAGED_DIR,name);
+            File file=Utils.join(ADDED_DIR,name);
             file.delete();
         }
     }

@@ -1,6 +1,9 @@
-package gitlet;
+package gitlet.operations;
 
 // TODO: any imports you need here
+
+import gitlet.Repository;
+import gitlet.Utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,7 +37,7 @@ public class Commit implements Serializable {
     /**
      * staged的总文件夹
      */
-    private static final File STAGED_DIR = Repository.STAGED_DIR;
+    private static final File ADDED_DIR = Repository.ADDED_DIR;
     private static final File BLOBS_DIR = Repository.BLOBS_DIR;
     /**
      * 提交链的HEAD指针（当前指针）
@@ -119,7 +122,7 @@ public class Commit implements Serializable {
      * 依据staged里的文件更新当前commit的blobs引用，已存在的更新，不存在的添加
      */
     private void refreshBlobs() {
-        List<String> keys = Utils.plainFilenamesIn(STAGED_DIR);//staged文件夹里add的文件
+        List<String> keys = Utils.plainFilenamesIn(ADDED_DIR);//staged文件夹里add的文件
         if (keys == null) throw new RuntimeException("staged don't have the target files");
         for (String key : keys) {
             File originFile = Utils.join(Repository.CWD, key);

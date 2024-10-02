@@ -1,7 +1,6 @@
 package gitlet;
 
-import javax.swing.text.Style;
-import java.io.File;
+import gitlet.operations.Init;
 
 /**
  * Driver class for Gitlet, a subset of the Git version-control system.
@@ -45,6 +44,10 @@ public class Main {
                 break;
             case "log":
                 Repository.logGitLet();
+                break;
+            case "rm":
+                String name=args[1];
+                Repository.rmGitLet(name);
                 break;
         }
         return;

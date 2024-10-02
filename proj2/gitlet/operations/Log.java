@@ -1,13 +1,22 @@
-package gitlet;
+package gitlet.operations;
 
 public class Log {
-
+    //TODO:合并没实现
     public static Commit HEAD=Commit.getHEAD();
-    public static void logFollowTheCommitTree(){
+    public static void log(){
        Commit check=HEAD;
         while(check!=null){
             printlnCommit(check);
-            //if(check.parent().SHA1()==null||check.SHA1().equals(check.parent().SHA1()))break;
+            check=check.parent();
+        }
+    }
+
+    public static void globalLog(){
+        Commit check=HEAD;
+        while(check!=null){
+            System.out.println("===");
+            System.out.println("commit "+check.SHA1());
+            System.out.println();
             check=check.parent();
         }
     }

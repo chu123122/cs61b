@@ -1,4 +1,7 @@
-package gitlet;
+package gitlet.operations;
+
+import gitlet.Repository;
+import gitlet.Utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,7 +15,7 @@ public class Add {
     /**
      * staged存储地址
      */
-    public static final File STAGED_DIR = Repository.STAGED_DIR;
+    public static final File STAGED_DIR = Repository.ADDED_DIR;
     /**
      * blobs存储地址
      */
