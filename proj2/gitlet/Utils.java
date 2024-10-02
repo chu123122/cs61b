@@ -1,6 +1,5 @@
 package gitlet;
 
-import gitlet.GitletException;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -28,7 +27,7 @@ import java.util.List;
  *
  *  @author P. N. Hilfinger
  */
- public class Utils {
+  class Utils {
 
     /** The length of a complete SHA-1 UID as a hexadecimal numeral. */
     static final int UID_LENGTH = 40;
@@ -37,7 +36,7 @@ import java.util.List;
 
     /** Returns the SHA-1 hash of the concatenation of VALS, which may
      *  be any mixture of byte arrays and Strings. */
-    public static String sha1(Object... vals) {
+     static String sha1(Object... vals) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-1");
             for (Object val : vals) {
@@ -109,7 +108,7 @@ import java.util.List;
     /** Return the entire contents of FILE as a String.  FILE must
      *  be a normal file.  Throws IllegalArgumentException
      *  in case of problems. */
-    public static String readContentsAsString(File file) {
+     static String readContentsAsString(File file) {
         return new String(readContents(file), StandardCharsets.UTF_8);
     }
 
@@ -140,7 +139,7 @@ import java.util.List;
 
     /** Return an object of type T read from FILE, casting it to EXPECTEDCLASS.
      *  Throws IllegalArgumentException in case of problems. */
-    public static <T extends Serializable> T readObject(File file,
+     static <T extends Serializable> T readObject(File file,
                                                         Class<T> expectedClass) {
         try {
             ObjectInputStream in =
@@ -155,7 +154,7 @@ import java.util.List;
     }
 
     /** Write OBJ to FILE. */
-    public static void writeObject(File file, Serializable obj) {
+     static void writeObject(File file, Serializable obj) {
         writeContents(file, serialize(obj));
     }
 
@@ -173,7 +172,7 @@ import java.util.List;
     /** Returns a list of the names of all plain files in the directory DIR, in
      *  lexicographic order as Java Strings.  Returns null if DIR does
      *  not denote a directory. */
-    public static List<String> plainFilenamesIn(File dir) {
+     static List<String> plainFilenamesIn(File dir) {
         String[] files = dir.list(PLAIN_FILES);
         if (files == null) {
             return null;
@@ -202,7 +201,7 @@ import java.util.List;
     /** Return the concatentation of FIRST and OTHERS into a File designator,
      *  analogous to the {@link java.nio.file.Paths#get(String, String[])}
      *  method. */
-    public static File join(File first, String... others) {
+     static File join(File first, String... others) {
         return Paths.get(first.getPath(), others).toFile();
     }
 
@@ -228,13 +227,13 @@ import java.util.List;
 
     /** Return a GitletException whose message is composed from MSG and ARGS as
      *  for the String.format method. */
-    public static GitletException error(String msg, Object... args) {
+     static GitletException error(String msg, Object... args) {
         return new GitletException(String.format(msg, args));
     }
 
     /** Print a message composed from MSG and ARGS as for the String.format
      *  method, followed by a newline. */
-    public static void message(String msg, Object... args) {
+     static void message(String msg, Object... args) {
         System.out.printf(msg, args);
         System.out.println();
     }

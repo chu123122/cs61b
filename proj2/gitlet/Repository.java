@@ -1,7 +1,5 @@
 package gitlet;
 
-import gitlet.operations.*;
-
 import java.io.File;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -102,6 +100,9 @@ public class Repository {
 
     public static void logGitLet(){
         Log.log();
+    }
+    public static void globalLogGitLet(){
+        Log.globalLog();
     }
 
     public static void rmGitLet(String fileName){

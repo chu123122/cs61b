@@ -1,7 +1,4 @@
-package gitlet.operations;
-
-import gitlet.Repository;
-import gitlet.Utils;
+package gitlet;
 
 import java.io.File;
 import java.io.IOException;

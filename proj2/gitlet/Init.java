@@ -1,6 +1,5 @@
-package gitlet.operations;
+package gitlet;
 
-import gitlet.Repository;
 
 import java.io.File;
 /**

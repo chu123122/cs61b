@@ -1,4 +1,4 @@
-package gitlet.operations;
+package gitlet;
 
 public class Log {
     //TODO:合并没实现

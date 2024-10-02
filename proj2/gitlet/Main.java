@@ -1,7 +1,5 @@
 package gitlet;
 
-import gitlet.operations.Init;
-
 /**
  * Driver class for Gitlet, a subset of the Git version-control system.
  *
@@ -44,6 +42,9 @@ public class Main {
                 break;
             case "log":
                 Repository.logGitLet();
+                break;
+            case "global-log":
+                Repository.globalLogGitLet();
                 break;
             case "rm":
                 String name=args[1];
