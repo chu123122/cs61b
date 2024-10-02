@@ -49,6 +49,10 @@ public class Main {
                 String name=args[1];
                 Repository.rmGitLet(name);
                 break;
+            case "find":
+                String findMessage=args[1];
+                Repository.findGitLet(findMessage);
+                break;
         }
         return;
     }

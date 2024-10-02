@@ -118,6 +118,14 @@ public class Repository {
         Remove.deleteCWDFile(fileName);
     }
 
+    public static void findGitLet(String message){
+        List<String> commitsSHA1=Find.findTheCommitsSHA1(message);
+        if(commitsSHA1.size()==0)Utils.message("Found no commit with that message.");
+        for (String SHA1:commitsSHA1) {
+            Find.printfTheFind(SHA1);
+        }
+    }
+
     /**
      * 删除staged文件夹里所有文件
      * */
