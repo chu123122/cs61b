@@ -14,12 +14,14 @@ public class Find {
         for (String fileName:fileNames) {
             File file=Utils.join(COMMITS_DIR,fileName);
             Commit commit=Utils.readObject(file, Commit.class);
-            if(commit.message().contains(message))
+            if(commit.message().contains(message)&&!file.getName().equals("HEAD"))
                 findResult.add(commit.SHA1());
         }
         return findResult;
     }
     public static void printfTheFind(String sha1){
-        System.out.println(sha1);
+        System.out.println("===");
+        System.out.println("commit "+sha1);
+        System.out.println();
     }
 }
