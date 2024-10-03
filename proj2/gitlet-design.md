@@ -95,6 +95,36 @@
 
 ---
 
+#### Log
+
+依据`HEAD` 指针从后往前输出历史提交记录（log）或通过读取`commits` 文件夹里所有提交依次输出（global-log）
+
+#### Field
+
+1. `public static Commit HEAD`
+
+---
+
+#### Find
+
+依据传入的`String` 类型的形参（message）在`commits` 文件夹里面查找所有信息中含有`message` 的提交，并将其输出
+
+#### Field
+
+1. `private static final File COMMITS_DIR`  
+
+---
+
+#### Remove
+
+
+
+#### Field
+
+
+
+---
+
 ## Algorithms
 
 ---

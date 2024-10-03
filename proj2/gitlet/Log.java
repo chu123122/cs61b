@@ -1,8 +1,14 @@
 package gitlet;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+
 public class Log {
     //TODO:合并没实现
     public static Commit HEAD=Commit.getHEAD();
+    private static final File COMMITS_DIR=Repository.COMMITS_DIR;
     public static void log(){
        Commit check=HEAD;
         while(check!=null){
@@ -11,13 +17,11 @@ public class Log {
         }
     }
 
+    //TODO:和实际需要的功能完全不一样
     public static void globalLog(){
-        Commit check=HEAD;
-        while(check!=null){
-            System.out.println("===");
-            System.out.println("commit "+check.SHA1());
-            System.out.println();
-            check=check.parent();
+        List<String> fileNames= Utils.plainFilenamesIn(COMMITS_DIR);
+        for (String fileName:fileNames) {
+            System.out.println("commit "+fileName);
         }
     }
 

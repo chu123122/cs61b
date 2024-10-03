@@ -42,6 +42,8 @@ public class Repository {
     /** 存储所有提交的历史记录. */
     public static final File COMMITS_DIR = Utils.join(Repository.GITLET_DIR, "commits");//双向链表存储
 
+    public static final File  REFS_DIR=Utils.join(COMMITS_DIR,"refs");
+
     /* TODO: fill in the rest of this class. */
     /**
      * init指令对应方法
