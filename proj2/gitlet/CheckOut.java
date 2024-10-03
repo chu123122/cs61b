@@ -22,4 +22,7 @@ public class CheckOut {
 
         }
     }
+    public static void changeBranch(String name){
+        Repository.currentBranch=name;
+    }
 }

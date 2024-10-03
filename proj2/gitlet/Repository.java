@@ -44,6 +44,8 @@ public class Repository {
 
     public static final File  REFS_DIR=Utils.join(COMMITS_DIR,"refs");
 
+    public static String currentBranch="";
+
     /* TODO: fill in the rest of this class. */
     /**
      * init指令对应方法
@@ -61,6 +63,9 @@ public class Repository {
         String message="initial commit";
         Commit initCommit=new Commit(message, timeScale,null);
         initCommit.submitCommit();
+        //创建初始分支并切换到上面
+        Branch.createNewBranch("master");
+        CheckOut.changeBranch("master");
     }
     /**
      * add指令对应方法
@@ -99,7 +104,9 @@ public class Repository {
         }
         CheckOut.checkOutTheFile(commit,fileName);
     }
-
+    public static void checkOutGitLet(String branchName){
+        CheckOut.changeBranch(branchName);
+    }
     public static void logGitLet(){
         Log.log();
     }
@@ -127,6 +134,10 @@ public class Repository {
         for (String SHA1:commitsSHA1) {
             Find.printfTheFind(SHA1);
         }
+    }
+
+    public static void branchGitLet(String name){
+        Branch.createNewBranch(name);
     }
 
     /**

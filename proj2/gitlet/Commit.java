@@ -36,6 +36,8 @@ public class Commit implements Serializable {
      */
     private static final File ADDED_DIR = Repository.ADDED_DIR;
     private static final File BLOBS_DIR = Repository.BLOBS_DIR;
+
+    private static final File REFS_DIR=Repository.REFS_DIR;
     /**
      * 提交链的HEAD指针（当前指针）
      */
@@ -94,13 +96,13 @@ public class Commit implements Serializable {
 
         Utils.writeObject(commit, this);
         try {
-            boolean create= commit.createNewFile();
-            if(create){}
+            commit.createNewFile();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
         setTheHEAD(commit);
+        setTheCurrentBranch(commit);
     }
 
     /**
@@ -110,6 +112,20 @@ public class Commit implements Serializable {
         File headCommit = Utils.join(COMMITS_DIR, HEAD);
         try {
             Files.copy(commit.toPath(), headCommit.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 更新当前分支指针的文件的引用（文件名不变化）
+     */
+    private void setTheCurrentBranch(File commit){
+        //当初始化时，当前分支还未准备好
+        if(Repository.currentBranch.equals(""))return;
+        File currentBranch=Utils.join(REFS_DIR,Repository.currentBranch);
+        try {
+            Files.copy(commit.toPath(), currentBranch.toPath(), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

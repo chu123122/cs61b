@@ -21,7 +21,8 @@ public class Log {
     public static void globalLog(){
         List<String> fileNames= Utils.plainFilenamesIn(COMMITS_DIR);
         for (String fileName:fileNames) {
-            System.out.println("commit "+fileName);
+            if(!fileName.equals("HEAD"))
+                System.out.println("commit "+fileName);
         }
     }
 

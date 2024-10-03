@@ -36,9 +36,9 @@ public class Main {
                     Repository.checkOutGitLet("HEAD",args[2]);
                 } else if (args.length==4) {
                     Repository.checkOutGitLet(args[1],args[3]);
-                }/*else if(args.length==2){
-
-                }*/
+                }else if(args.length==2){
+                    Repository.checkOutGitLet(args[1]);
+                }
                 break;
             case "log":
                 Repository.logGitLet();
@@ -54,6 +54,9 @@ public class Main {
                 String findMessage=args[1];
                 Repository.findGitLet(findMessage);
                 break;
+            case "branch":
+                String branchName=args[1];
+                Repository.branchGitLet(branchName);
         }
         return;
     }
