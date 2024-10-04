@@ -157,7 +157,7 @@ public class Repository {
             return;
         }
         //如果删除的分支不存在，返回
-        if(Branch.checkHaveTheBranch(name)){
+        if(!Branch.checkHaveTheBranch(name)){
             Utils.message("A branch with that name does not exist.");
             return;
         }

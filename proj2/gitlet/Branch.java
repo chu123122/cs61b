@@ -1,6 +1,5 @@
 package gitlet;
 
-import org.checkerframework.checker.guieffect.qual.UI;
 
 import java.io.File;
 import java.io.IOException;

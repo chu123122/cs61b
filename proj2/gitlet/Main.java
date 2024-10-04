@@ -18,15 +18,12 @@ public class Main {
         String firstArg = args[0];
         switch (firstArg) {
             case "init":
-                // TODO: handle the `init` command
                 Repository.setupPersistence();
                 break;
             case "add":
-                // TODO: handle the `add [filename]` command
                 String fileName = args[1];
                 Repository.addGitLet(fileName);
                 break;
-            // TODO: FILL THE REST IN
             case "commit":
                 String message = args[1];
                 Repository.commitGitLet(message);
@@ -58,7 +55,7 @@ public class Main {
                 String crBranchName=args[1];
                 Repository.branchGitLet(crBranchName);
                 break;
-            case "bm-branch":
+            case "rm-branch":
                 String rmBranchName=args[1];
                 Repository.rmBranchGitLet(rmBranchName);
                 break;
