@@ -43,6 +43,7 @@ public class Repository {
     public static final File COMMITS_DIR = Utils.join(Repository.GITLET_DIR, "commits");//双向链表存储
 
     public static final File  REFS_DIR=Utils.join(COMMITS_DIR,"refs");
+    public static final File  CURRENT_DIR=Utils.join(REFS_DIR,"current");
 
     public static String currentBranch="";
 
@@ -91,7 +92,8 @@ public class Repository {
 
         Commit commit=Commit.getNewFromHEAD(message,formattedDate);
         commit.submitCommit();
-        cleanStagedDic();
+        cleanDic(ADDED_DIR);
+        cleanDic(REMOVED_DIR);
     }
     /**
      * checkout指令对应方法
@@ -124,6 +126,8 @@ public class Repository {
                 return;
             }
         }
+        //检查是否在HEAD里被追踪
+        if(!Commit.getHEAD().blobs().containsKey(fileName))Utils.message("No reason to remove the file.");
         Remove.copyCWDToRemoval(fileName);
         Remove.deleteCWDFile(fileName);
     }
@@ -140,13 +144,22 @@ public class Repository {
         Branch.createNewBranch(name);
     }
 
+    public static void statusGitLet(){
+        Status.printBranches();
+        Status.printStaged();
+        Status.printRemoved();
+        Status.printModifications();
+        Status.printUntracked();
+        System.out.println();
+    }
+
     /**
-     * 删除staged文件夹里所有文件
+     * 删除文件夹里所有文件
      * */
-    private static void cleanStagedDic(){
-        List<String> stagedDic=plainFilenamesIn(ADDED_DIR);
+    private static void cleanDic(File dir){
+        List<String> stagedDic=plainFilenamesIn(dir);
         for (String name:stagedDic) {
-            File file=Utils.join(ADDED_DIR,name);
+            File file=Utils.join(dir,name);
             file.delete();
         }
     }

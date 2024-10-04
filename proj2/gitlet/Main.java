@@ -57,6 +57,10 @@ public class Main {
             case "branch":
                 String branchName=args[1];
                 Repository.branchGitLet(branchName);
+                break;
+            case "status":
+                Repository.statusGitLet();
+                break;
         }
         return;
     }

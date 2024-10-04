@@ -11,11 +11,17 @@ public class Remove {
     private static final File ADD_DIR =Repository.ADDED_DIR;
     private static final File REMOVED_DIR=Repository.REMOVED_DIR;
 
+    /**
+     * 将目标文件从ADD_DIR文件夹里面删除
+     * */
     public static void unStagedFile(String fileName){
         File stagedFile= Utils.join(ADD_DIR,fileName);
         stagedFile.delete();
     }
 
+    /**
+     * 将目标文件复制一份到REMOVED_DIR
+     * */
     public static void copyCWDToRemoval(String fileName){
         File cwdFile=Utils.join(CWD,fileName);
         File removealFile=Utils.join(REMOVED_DIR,fileName);
@@ -26,9 +32,11 @@ public class Remove {
             throw new RuntimeException(e);
         }
     }
-
+    /**
+     * 删除在CWD的目标文件
+     * */
     public static void deleteCWDFile(String fileName){
         File cwdFile=Utils.join(CWD,fileName);
-       cwdFile.delete();
+        cwdFile.delete();
     }
 }

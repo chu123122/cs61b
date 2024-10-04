@@ -162,6 +162,9 @@ public class Commit implements Serializable {
         return Utils.readObject(headFile, Commit.class);
     }
 
+    /**
+     * 从COMMITS_DIR文件夹里依据SHA1码查找提交
+     * */
     public static Commit findCommitWithName(String commitId) {
         List<String> commitIds = Utils.plainFilenamesIn(COMMITS_DIR);
         for (String sha1 : commitIds) {

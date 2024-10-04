@@ -7,11 +7,18 @@ import java.util.List;
 public class Status {
 
     private static final File ADDED_DIR = Repository.ADDED_DIR;
+    private static final File REFS_DIR=Repository.REFS_DIR;
     private static final File REMOVED_DIR = Repository.REMOVED_DIR;
 
     public static void printBranches() {
         System.out.println("=== Branches ===");
-
+        List<String> fileNamesInDir = Utils.plainFilenamesIn(REFS_DIR);
+        Collections.sort(fileNamesInDir);
+        for (String name : fileNamesInDir) {
+            if(name.equals(Repository.currentBranch))
+                System.out.print("*");
+            System.out.println(name);
+        }
         System.out.println();
     }
 
