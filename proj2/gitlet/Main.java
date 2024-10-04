@@ -55,8 +55,12 @@ public class Main {
                 Repository.findGitLet(findMessage);
                 break;
             case "branch":
-                String branchName=args[1];
-                Repository.branchGitLet(branchName);
+                String crBranchName=args[1];
+                Repository.branchGitLet(crBranchName);
+                break;
+            case "bm-branch":
+                String rmBranchName=args[1];
+                Repository.rmBranchGitLet(rmBranchName);
                 break;
             case "status":
                 Repository.statusGitLet();

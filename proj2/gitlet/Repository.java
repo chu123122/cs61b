@@ -42,8 +42,8 @@ public class Repository {
     /** 存储所有提交的历史记录. */
     public static final File COMMITS_DIR = Utils.join(Repository.GITLET_DIR, "commits");//双向链表存储
 
-    public static final File  REFS_DIR=Utils.join(COMMITS_DIR,"refs");
-    public static final File  CURRENT_DIR=Utils.join(REFS_DIR,"current");
+    public static final File REFS_DIR=Utils.join(COMMITS_DIR,"refs");
+    public static final File CURRENT_DIR=Utils.join(REFS_DIR,"current");
 
     public static String currentBranch="";
 
@@ -127,14 +127,20 @@ public class Repository {
             }
         }
         //检查是否在HEAD里被追踪
-        if(!Commit.getHEAD().blobs().containsKey(fileName))Utils.message("No reason to remove the file.");
+        if(!Commit.getHEAD().blobs().containsKey(fileName)){
+            Utils.message("No reason to remove the file.");
+            return;
+        }
         Remove.copyCWDToRemoval(fileName);
         Remove.deleteCWDFile(fileName);
     }
 
     public static void findGitLet(String message){
         List<String> commitsSHA1=Find.findTheCommitsSHA1(message);
-        if(commitsSHA1.size()==0)Utils.message("Found no commit with that message.");
+        if(commitsSHA1.size()==0){
+            Utils.message("Found no commit with that message.");
+            return;
+        }
         for (String SHA1:commitsSHA1) {
             Find.printfTheFind(SHA1);
         }
@@ -144,6 +150,19 @@ public class Repository {
         Branch.createNewBranch(name);
     }
 
+    public static void rmBranchGitLet(String name){
+        //如果删除的分支是当前分支，返回
+        if(currentBranch.equals(name)){
+            Utils.message("Cannot remove the current branch.");
+            return;
+        }
+        //如果删除的分支不存在，返回
+        if(Branch.checkHaveTheBranch(name)){
+            Utils.message("A branch with that name does not exist.");
+            return;
+        }
+        Branch.rmTheBranch(name);
+    }
     public static void statusGitLet(){
         Status.printBranches();
         Status.printStaged();

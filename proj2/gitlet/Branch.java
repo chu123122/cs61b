@@ -1,9 +1,12 @@
 package gitlet;
 
+import org.checkerframework.checker.guieffect.qual.UI;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 
 public class Branch {
 
@@ -23,6 +26,25 @@ public class Branch {
             throw new RuntimeException(e);
         }
 
+    }
+
+    public static void rmTheBranch(String name){
+        List<String> filesInRefs=Utils.plainFilenamesIn(REFS_DIR);
+        for (String fileName:filesInRefs) {
+            if(fileName.equals(name)){
+                File file=Utils.join(REFS_DIR,fileName);
+                file.delete();
+                return;
+            }
+        }
+    }
+
+    public static boolean checkHaveTheBranch(String name){
+        List<String> filesInRefs=Utils.plainFilenamesIn(REFS_DIR);
+        for (String fileName:filesInRefs) {
+            if(fileName.equals(name))return true;
+        }
+        return false;
     }
 
 }
