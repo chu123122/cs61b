@@ -27,6 +27,7 @@ public class Commit implements Serializable {
      * comment above them describing what that variable represents and how that
      * variable is used. We've provided one example for `message`.
      */
+    private static final File CWD=Repository.CWD;
     /**
      * commits的总文件夹
      */
@@ -176,6 +177,32 @@ public class Commit implements Serializable {
         return null;
     }
 
+    /**
+     * 检查COMIMITS_DIR文件夹里面是否有特定提交
+     * */
+    public static boolean checkHaveTheCommit(String commitId){
+        List<String> filesInCOMMITS=Utils.plainFilenamesIn(COMMITS_DIR);
+        for (String name:filesInCOMMITS) {
+            if(name.equals(commitId)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 检查HEAD中是否有特定的文件
+     * */
+    public static boolean checkHaveTheFileInHEAD(String fileName){
+        Commit HEAD=getHEAD();
+        Map<String,String> map=HEAD.blobs();
+        if(!map.containsKey(fileName))return false;//如果blobs中不含有该文件
+        else{
+            File file = Utils.join(CWD,fileName);
+            String sha1=Utils.sha1(Utils.readContentsAsString(file));
+            return sha1.equals(map.get(fileName));//如果blobs中不含有SHA1码相同的文件
+        }
+    }
     public Commit parent() {
         if(parent==null)return null;
         File commit = Utils.join(COMMITS_DIR, parent);

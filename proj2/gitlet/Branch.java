@@ -9,6 +9,7 @@ import java.util.List;
 
 public class Branch {
 
+    //TODO:当提交时不仅更新HEAD还更新当前分支的ref
     public static final File REFS_DIR=Repository.REFS_DIR;
     public static final File COMMITS_DIR=Repository.COMMITS_DIR;
     public static final String HEAD="HEAD";

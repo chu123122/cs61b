@@ -172,6 +172,28 @@ public class Repository {
         System.out.println();
     }
 
+    public static void reSetGitLet(String commitId){
+        if(!Commit.checkHaveTheCommit(commitId)){
+            Utils.message("No commit with that id exists.");
+            return;
+        }
+        List<String> filesInCWD=Utils.plainFilenamesIn(CWD);
+        List<String> filesInREMOVED=Utils.plainFilenamesIn(REMOVED_DIR);
+        List<String> filesInADDED=Utils.plainFilenamesIn(ADDED_DIR);
+        for (String name:filesInCWD) {
+            if(!filesInADDED.contains(name)&&!filesInREMOVED.contains(name)){
+                if(!Commit.checkHaveTheFileInHEAD(name)){
+                    Utils.message("There is an untracked file in the way; delete it, or add and commit it first.");
+                    return;
+                }
+            }
+        }
+
+        Reset.resetFromTheBranch(commitId);
+        cleanDic(ADDED_DIR);
+        cleanDic(REMOVED_DIR);
+    }
+
     /**
      * 删除文件夹里所有文件
      * */

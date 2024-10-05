@@ -62,6 +62,10 @@ public class Main {
             case "status":
                 Repository.statusGitLet();
                 break;
+            case "reset":
+                String resetCommitId=args[1];
+                Repository.reSetGitLet(resetCommitId);
+                break;
         }
         return;
     }
