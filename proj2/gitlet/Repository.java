@@ -213,7 +213,10 @@ public class Repository {
             Utils.message("Current branch fast-forwarded.");
             return;
         }
-        Merge.checkAllFiles(spiltPoint,givenBranch);
+        boolean conflict= Merge.checkAllFiles(spiltPoint,givenBranch);
+
+        commitGitLet("Merged "+givenBranchName+" into +"+currentBranch+".");
+        if(conflict)Utils.message("Encountered a merge conflict.");
     }
 
     private static boolean haveUntrackedFile(){

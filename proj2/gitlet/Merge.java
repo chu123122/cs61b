@@ -30,7 +30,8 @@ public class Merge {
         return HEADParent;
     }
 
-    public static void checkAllFiles(Commit spiltPoint, Commit givenBranch) {
+    public static boolean checkAllFiles(Commit spiltPoint, Commit givenBranch) {
+        boolean happenConflict=false;
         Set<String> allFiles = getAllFiles(spiltPoint, givenBranch);
         Map<String, String> spiltPointMap = spiltPoint.blobs();//分割点
         Map<String, String> currentBranchMap = Branch.getBranchFromString(Repository.currentBranch).blobs();//现在
@@ -46,6 +47,7 @@ public class Merge {
                     String givenValue=givenBranchMap.get(fileName);
                     if(!currentValue.equals(spiltPointValue)&&!givenValue.equals(spiltPointValue)){//当前和given的修改与spilt都不一样
                         mergeConflict(currentValue,givenValue);//合并冲突
+                        happenConflict=true;
                     } else if (!currentValue.equals(spiltPointValue)) {//当前的修改与spilt不一样
                         finalFilesMap.put(fileName,currentValue);
                     } else if (!givenValue.equals(spiltPointValue)) {//given的修改与spilt不一样
@@ -57,6 +59,7 @@ public class Merge {
                         removedList.add(fileName);
                     }else{                                          //修改了
                         mergeConflict(currentValue,null);//合并冲突
+                        happenConflict=true;
                     }
                 } else if (givenBranchMap.containsKey(fileName)) {//given有（可能修改可能没有）
                     String givenValue=givenBranchMap.get(fileName);
@@ -64,6 +67,7 @@ public class Merge {
 
                 }else{                                              //修改了
                         mergeConflict(null,givenValue);//合并冲突
+                        happenConflict=true;
                     }
                 } else {
                     removedList.add(fileName);
@@ -76,6 +80,7 @@ public class Merge {
                         finalFilesMap.put(fileName,currentValue);
                     }else{ //修改不一致
                         mergeConflict(currentValue,givenValue);//合并冲突
+                        happenConflict=true;
                     }
                 } else if (currentBranchMap.containsKey(fileName)) {//当前修改过/有
                     finalFilesMap.put(fileName,currentBranchMap.get(fileName));
@@ -90,6 +95,7 @@ public class Merge {
 
         setTheCWDFiles(finalFilesMap);
         stagedFiles(addedList,removedList);
+        return happenConflict;
     }
 
     /**
