@@ -66,6 +66,10 @@ public class Main {
                 String resetCommitId=args[1];
                 Repository.reSetGitLet(resetCommitId);
                 break;
+            case "merge":
+                String mergeBranchName=args[1];
+                Repository.mergeGitLet(mergeBranchName);
+                break;
         }
         return;
     }

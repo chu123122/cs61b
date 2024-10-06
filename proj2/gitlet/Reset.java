@@ -20,6 +20,9 @@ public class Reset {
         setHEAD(commitID);
     }
 
+    /**
+     * 更改HEAD为特定的提交
+     * */
     private static void setHEAD(String commitID){
         File headCommit = Utils.join(COMMITS_DIR, HEAD);
         File commit=Utils.join(COMMITS_DIR,commitID);
@@ -30,6 +33,9 @@ public class Reset {
         }
     }
 
+    /**
+     * 从特定的提交复制所有引用到CWD文件夹里
+     * */
     private static void copyBlobsToCWD(String commitID){
         File commitFile=Utils.join(COMMITS_DIR,commitID);
         Commit commit=Utils.readObject(commitFile, Commit.class);
@@ -44,6 +50,9 @@ public class Reset {
             }
         }
     }
+    /**
+     * 删除CWD文件夹里面的所有文件
+     * */
     private static void rmCWD(){
         List<String> filesInCWD=Utils.plainFilenamesIn(CWD);
         for (String name:filesInCWD) {

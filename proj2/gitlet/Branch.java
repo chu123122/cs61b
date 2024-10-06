@@ -47,4 +47,9 @@ public class Branch {
         return false;
     }
 
+    public static Commit getBranchFromString(String branchName){
+        File branch=Utils.join(REFS_DIR,branchName);
+        return Utils.readObject(branch, Commit.class);
+    }
+
 }

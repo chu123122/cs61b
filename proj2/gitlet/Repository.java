@@ -92,8 +92,8 @@ public class Repository {
 
         Commit commit=Commit.getNewFromHEAD(message,formattedDate);
         commit.submitCommit();
-        cleanDic(ADDED_DIR);
-        cleanDic(REMOVED_DIR);
+        Utils.cleanDic(ADDED_DIR);
+        Utils.cleanDic(REMOVED_DIR);
     }
     /**
      * checkout指令对应方法
@@ -177,31 +177,63 @@ public class Repository {
             Utils.message("No commit with that id exists.");
             return;
         }
+        if(haveUntrackedFile()){
+            Utils.message("There is an untracked file in the way; delete it, or add and commit it first.");
+            return;
+        }
+
+        Reset.resetFromTheBranch(commitId);
+        Utils.cleanDic(ADDED_DIR);
+        Utils.cleanDic(REMOVED_DIR);
+    }
+
+
+    public static void mergeGitLet(String givenBranchName){
+        if(dirIsEmpty(ADDED_DIR)&&dirIsEmpty(REMOVED_DIR)){
+            Utils.message("You have uncommitted changes.");
+            return;
+        } else if(Branch.checkHaveTheBranch(givenBranchName)){
+            Utils.message("A branch with that name does not exist.");
+            return;
+        } else if (givenBranchName.equals(currentBranch)) {
+            Utils.message("Cannot merge a branch with itself.");
+            return;
+        }else if(haveUntrackedFile()){
+            Utils.message("There is an untracked file in the way; delete it, or add and commit it first.");
+            return;
+        }
+
+        Commit spiltPoint=Merge.findTheSpiltPoint(givenBranchName);
+        Commit givenBranch=Branch.getBranchFromString(givenBranchName);
+        if(spiltPoint.equals(givenBranch)){         //分割点和给定分支相同，即给定分支无额外提交（当前最新，无需操作）
+            Utils.message("Given branch is an ancestor of the current branch.");
+            return;
+        } else if (spiltPoint.equals(Commit.getHEAD())) {           //分割点是当前分支，即当前分支无额外提交（给定分支最新，直接将当前分支快进到给定分支）
+            Merge.fastForwardToBranch(givenBranchName);
+            Utils.message("Current branch fast-forwarded.");
+            return;
+        }
+        Merge.checkAllFiles(spiltPoint,givenBranch);
+    }
+
+    private static boolean haveUntrackedFile(){
         List<String> filesInCWD=Utils.plainFilenamesIn(CWD);
         List<String> filesInREMOVED=Utils.plainFilenamesIn(REMOVED_DIR);
         List<String> filesInADDED=Utils.plainFilenamesIn(ADDED_DIR);
         for (String name:filesInCWD) {
-            if(!filesInADDED.contains(name)&&!filesInREMOVED.contains(name)){
-                if(!Commit.checkHaveTheFileInHEAD(name)){
-                    Utils.message("There is an untracked file in the way; delete it, or add and commit it first.");
-                    return;
+            if(!filesInADDED.contains(name)&&!filesInREMOVED.contains(name)){   //文件未追踪
+                if(!Commit.checkHaveTheFileInHEAD(name)){                       //文件在目标提交中未拥有
+                    return true;
                 }
             }
         }
-
-        Reset.resetFromTheBranch(commitId);
-        cleanDic(ADDED_DIR);
-        cleanDic(REMOVED_DIR);
+        return false;
     }
 
-    /**
-     * 删除文件夹里所有文件
-     * */
-    private static void cleanDic(File dir){
-        List<String> stagedDic=plainFilenamesIn(dir);
-        for (String name:stagedDic) {
-            File file=Utils.join(dir,name);
-            file.delete();
-        }
+    private static boolean dirIsEmpty(File dir){
+        List<String> filesInAdded=Utils.plainFilenamesIn(dir);
+        return filesInAdded.size() == 0;
     }
+
+
 }

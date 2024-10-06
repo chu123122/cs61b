@@ -27,7 +27,7 @@ public class Commit implements Serializable {
      * comment above them describing what that variable represents and how that
      * variable is used. We've provided one example for `message`.
      */
-    private static final File CWD=Repository.CWD;
+    private static final File CWD = Repository.CWD;
     /**
      * commits的总文件夹
      */
@@ -38,7 +38,7 @@ public class Commit implements Serializable {
     private static final File ADDED_DIR = Repository.ADDED_DIR;
     private static final File BLOBS_DIR = Repository.BLOBS_DIR;
 
-    private static final File REFS_DIR=Repository.REFS_DIR;
+    private static final File REFS_DIR = Repository.REFS_DIR;
     /**
      * 提交链的HEAD指针（当前指针）
      */
@@ -102,6 +102,10 @@ public class Commit implements Serializable {
             throw new RuntimeException(e);
         }
 
+        setHEADAndCurrentBranchRefs(commit);
+    }
+
+    public static void setHEADAndCurrentBranchRefs(File commit) {
         setTheHEAD(commit);
         setTheCurrentBranch(commit);
     }
@@ -109,7 +113,7 @@ public class Commit implements Serializable {
     /**
      * 更新HEAD指针的文件的引用（文件名不变化，依旧HEAD）
      */
-    private void setTheHEAD(File commit) {
+    private static void setTheHEAD(File commit) {
         File headCommit = Utils.join(COMMITS_DIR, HEAD);
         try {
             Files.copy(commit.toPath(), headCommit.toPath(), StandardCopyOption.REPLACE_EXISTING);
@@ -121,10 +125,10 @@ public class Commit implements Serializable {
     /**
      * 更新当前分支指针的文件的引用（文件名不变化）
      */
-    private void setTheCurrentBranch(File commit){
+    private static void setTheCurrentBranch(File commit) {
         //当初始化时，当前分支还未准备好
-        if(Repository.currentBranch.equals(""))return;
-        File currentBranch=Utils.join(REFS_DIR,Repository.currentBranch);
+        if (Repository.currentBranch.equals("")) return;
+        File currentBranch = Utils.join(REFS_DIR, Repository.currentBranch);
         try {
             Files.copy(commit.toPath(), currentBranch.toPath(), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
@@ -150,9 +154,9 @@ public class Commit implements Serializable {
      * 返回一个blobs继承自HEAD的commit
      */
     public static Commit getNewFromHEAD(String message, String timeScale) {
-        File HEADFile=Utils.join(COMMITS_DIR,HEAD);
-        Commit HEAD=Utils.readObject(HEADFile, Commit.class);
-        return new Commit(message, timeScale,HEAD.SHA1());
+        File HEADFile = Utils.join(COMMITS_DIR, HEAD);
+        Commit HEAD = Utils.readObject(HEADFile, Commit.class);
+        return new Commit(message, timeScale, HEAD.SHA1());
     }
 
     /**
@@ -165,7 +169,7 @@ public class Commit implements Serializable {
 
     /**
      * 从COMMITS_DIR文件夹里依据SHA1码查找提交
-     * */
+     */
     public static Commit findCommitWithName(String commitId) {
         List<String> commitIds = Utils.plainFilenamesIn(COMMITS_DIR);
         for (String sha1 : commitIds) {
@@ -179,11 +183,11 @@ public class Commit implements Serializable {
 
     /**
      * 检查COMIMITS_DIR文件夹里面是否有特定提交
-     * */
-    public static boolean checkHaveTheCommit(String commitId){
-        List<String> filesInCOMMITS=Utils.plainFilenamesIn(COMMITS_DIR);
-        for (String name:filesInCOMMITS) {
-            if(name.equals(commitId)){
+     */
+    public static boolean checkHaveTheCommit(String commitId) {
+        List<String> filesInCOMMITS = Utils.plainFilenamesIn(COMMITS_DIR);
+        for (String name : filesInCOMMITS) {
+            if (name.equals(commitId)) {
                 return true;
             }
         }
@@ -192,19 +196,20 @@ public class Commit implements Serializable {
 
     /**
      * 检查HEAD中是否有特定的文件
-     * */
-    public static boolean checkHaveTheFileInHEAD(String fileName){
-        Commit HEAD=getHEAD();
-        Map<String,String> map=HEAD.blobs();
-        if(!map.containsKey(fileName))return false;//如果blobs中不含有该文件
-        else{
-            File file = Utils.join(CWD,fileName);
-            String sha1=Utils.sha1(Utils.readContentsAsString(file));
+     */
+    public static boolean checkHaveTheFileInHEAD(String fileName) {
+        Commit HEAD = getHEAD();
+        Map<String, String> map = HEAD.blobs();
+        if (!map.containsKey(fileName)) return false;//如果blobs中不含有该文件
+        else {
+            File file = Utils.join(CWD, fileName);
+            String sha1 = Utils.sha1(Utils.readContentsAsString(file));
             return sha1.equals(map.get(fileName));//如果blobs中不含有SHA1码相同的文件
         }
     }
+
     public Commit parent() {
-        if(parent==null)return null;
+        if (parent == null) return null;
         File commit = Utils.join(COMMITS_DIR, parent);
         return Utils.readObject(commit, Commit.class);
     }
@@ -224,13 +229,13 @@ public class Commit implements Serializable {
     public Map<String, String> blobs() {
         return blobs;
     }
+
     @Override
-    public String toString(){
-        return "Commit{" +
-                "message='" + message + '\'' +
-                ", timestamp=" + timeScale +
-                ", parentHash='" + parent + '\'' +
-                ", blobs=" + blobs +
-                '}';
+    public String toString() {
+        return "Commit{" + "message='" + message + '\'' + ", timestamp=" + timeScale + ", parentHash='" + parent + '\'' + ", blobs=" + blobs + '}';
+    }
+
+    public boolean equals(Commit otherCommit) {
+        return this.SHA1().equals(otherCommit.SHA1());
     }
 }

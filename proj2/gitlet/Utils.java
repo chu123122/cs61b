@@ -237,4 +237,15 @@ import java.util.List;
         System.out.printf(msg, args);
         System.out.println();
     }
+
+    /**
+     * 删除文件夹里所有文件
+     * */
+    static void cleanDic(File dir){
+        List<String> stagedDic=plainFilenamesIn(dir);
+        for (String name:stagedDic) {
+            File file=Utils.join(dir,name);
+            file.delete();
+        }
+    }
 }
