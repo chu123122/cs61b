@@ -84,6 +84,13 @@ public class Repository {
      * commit指令对应方法
      * */
     public static void commitGitLet(String message){
+        if(message == null||message.equals("")){
+            Utils.message("Please enter a commit message.");
+            return;
+        }else if(dirIsEmpty(ADDED_DIR)&&dirIsEmpty(REMOVED_DIR)){
+            Utils.message("No changes added to the commit.");
+            return;
+        }
         //获取当前的时间戳
         ZoneOffset offset = ZoneOffset.ofHours(-8);
         ZonedDateTime dateTime = ZonedDateTime.now(offset);
@@ -104,9 +111,27 @@ public class Repository {
             Utils.message("No commit with that id exists.");
             return;
         }
-        CheckOut.checkOutTheFile(commit,fileName);
+        File sourceFile=commit.findFileInBlobs(fileName);
+        File targetFile=Utils.join(CWD,fileName);
+        if(sourceFile==null){
+            Utils.message("File does not exist in that commit.");
+            return;
+        }
+
+        CheckOut.checkOutFile(sourceFile,targetFile);
     }
     public static void checkOutGitLet(String branchName){
+        if(!Branch.haveTheBranch(branchName)){
+            Utils.message("No such branch exists.");
+            return;
+        } else if (branchName.equals(currentBranch)) {
+            Utils.message("No need to checkout the current branch.");
+            return;
+        } else if (haveUntrackedFile()) {
+            Utils.message("There is an untracked file in the way; delete it, or add and commit it first.");
+            return;
+        }
+
         CheckOut.changeBranch(branchName);
     }
     public static void logGitLet(){
@@ -157,7 +182,7 @@ public class Repository {
             return;
         }
         //如果删除的分支不存在，返回
-        if(!Branch.checkHaveTheBranch(name)){
+        if(!Branch.haveTheBranch(name)){
             Utils.message("A branch with that name does not exist.");
             return;
         }
@@ -192,7 +217,7 @@ public class Repository {
         if(dirIsEmpty(ADDED_DIR)&&dirIsEmpty(REMOVED_DIR)){
             Utils.message("You have uncommitted changes.");
             return;
-        } else if(Branch.checkHaveTheBranch(givenBranchName)){
+        } else if(Branch.haveTheBranch(givenBranchName)){
             Utils.message("A branch with that name does not exist.");
             return;
         } else if (givenBranchName.equals(currentBranch)) {

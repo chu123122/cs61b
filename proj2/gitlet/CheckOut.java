@@ -10,15 +10,9 @@ public class CheckOut {
     private static final File CWD= Repository.CWD;
     private static final File CURRENT_DIR=Repository.CURRENT_DIR;
 
-    public static void checkOutTheFile(Commit commit, String fileName){
-        File file=commit.findFileInBlobs(fileName);
-        if(file==null){
-            Utils.message("File does not exist in that commit.");
-            return;
-        }
-        File targerFile=Utils.join(CWD,fileName);
+    public static void checkOutFile(File sourceFile,File targetFile){
         try {
-            Files.copy(file.toPath(),targerFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(sourceFile.toPath(),targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             throw new RuntimeException(e);
 

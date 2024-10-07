@@ -26,7 +26,7 @@ public class Remove {
         File cwdFile=Utils.join(CWD,fileName);
         File removealFile=Utils.join(REMOVED_DIR,fileName);
         //复制到removed文件夹
-        try {
+        try { 
             Files.copy(cwdFile.toPath(),removealFile.toPath(), StandardCopyOption.COPY_ATTRIBUTES);
         } catch (IOException e) {
             throw new RuntimeException(e);

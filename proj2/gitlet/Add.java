@@ -26,8 +26,8 @@ public class Add {
         String sha1=Utils.sha1(Utils.readContentsAsString(file));
         File blobs = Utils.join(BLOBS_DIR,sha1);//blobs文件夹的备份（用sha1码）
         try {
-            Files.copy(file.toPath(), staged.toPath(), StandardCopyOption.COPY_ATTRIBUTES);
-            Files.copy(file.toPath(), blobs.toPath(), StandardCopyOption.COPY_ATTRIBUTES);
+            Files.copy(file.toPath(), staged.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(file.toPath(), blobs.toPath(), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             throw Utils.error("文件复制出现问题");
         }

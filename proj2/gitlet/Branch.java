@@ -39,7 +39,7 @@ public class Branch {
         }
     }
 
-    public static boolean checkHaveTheBranch(String name){
+    public static boolean haveTheBranch(String name){
         List<String> filesInRefs=Utils.plainFilenamesIn(REFS_DIR);
         for (String fileName:filesInRefs) {
             if(fileName.equals(name))return true;
