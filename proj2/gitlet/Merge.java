@@ -103,15 +103,7 @@ public class Merge {
      * */
     private static void setTheCWDFiles(Map <String,String> map){
         Utils.cleanDic(CWD);
-        for (String key: map.keySet()) {
-            File keyFile=Utils.join(CWD,key);
-            File valueFile=Utils.join(BLOBS_DIR,map.get(key));
-            try {
-                Files.copy(valueFile.toPath(),keyFile.toPath(), StandardCopyOption.COPY_ATTRIBUTES);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
+        Utils.copyFromSource(map, CWD, BLOBS_DIR);
     }
     /**
      * 依据addedList添加ADDED_DIR里面的文件，依据removedList添加REMOVED_DIR里面的文件

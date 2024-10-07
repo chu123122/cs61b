@@ -13,11 +13,13 @@ import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.StandardCopyOption;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Formatter;
 import java.util.List;
+import java.util.Map;
 
 
 /** Assorted utilities.
@@ -246,6 +248,18 @@ import java.util.List;
         for (String name:stagedDic) {
             File file=Utils.join(dir,name);
             file.delete();
+        }
+    }
+
+    static void copyFromSource(Map<String, String> blobs, File target, File source) {
+        for (String fileName: blobs.keySet()) {
+            File file= Utils.join(target,fileName);
+            File sourceFile=Utils.join(source,blobs.get(fileName));
+            try {
+                Files.copy(sourceFile.toPath(),file.toPath(), StandardCopyOption.COPY_ATTRIBUTES);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }

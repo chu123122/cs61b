@@ -1,5 +1,6 @@
 package gitlet;
 
+
 /**
  * Driver class for Gitlet, a subset of the Git version-control system.
  *
@@ -16,6 +17,8 @@ public class Main {
         // TODO: what if args is empty?
         Init.setDefault();
         String firstArg = args[0];
+        int lenth=args.length;
+
         switch (firstArg) {
             case "init":
                 Repository.setupPersistence();
@@ -69,6 +72,12 @@ public class Main {
             case "merge":
                 String mergeBranchName=args[1];
                 Repository.mergeGitLet(mergeBranchName);
+                break;
+
+            case "checkWug":
+                Commit HEAD= Commit.getHEAD();
+                String sha1=HEAD.blobs().get("wug.txt");
+                System.out.println(sha1);
                 break;
         }
         return;

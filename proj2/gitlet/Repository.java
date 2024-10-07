@@ -103,7 +103,7 @@ public class Repository {
         Utils.cleanDic(REMOVED_DIR);
     }
     /**
-     * checkout指令对应方法
+     * checkout指令对应方法(文件)
      * */
     public static void checkOutGitLet(String commitId,String fileName){
         Commit commit=Commit.findCommitWithName(commitId);
@@ -120,6 +120,9 @@ public class Repository {
 
         CheckOut.checkOutFile(sourceFile,targetFile);
     }
+    /**
+     * checkout指令对应方法(分支)
+     * */
     public static void checkOutGitLet(String branchName){
         if(!Branch.haveTheBranch(branchName)){
             Utils.message("No such branch exists.");
