@@ -31,61 +31,61 @@ public class Merge {
     }
 
     public static boolean checkAllFiles(Commit spiltPoint, Commit givenBranch) {
-        boolean happenConflict=false;
+        boolean happenConflict = false;
         Set<String> allFiles = getAllFiles(spiltPoint, givenBranch);
         Map<String, String> spiltPointMap = spiltPoint.blobs();//分割点
         Map<String, String> currentBranchMap = Branch.getBranchFromString(Repository.currentBranch).blobs();//现在
         Map<String, String> givenBranchMap = givenBranch.blobs();//given
-        List<String > addedList=new ArrayList<>();//staged for added
-        List<String > removedList=new ArrayList<>();//staged for removal
-        Map<String,String> finalFilesMap=new HashMap<>();
+        List<String> addedList = new ArrayList<>();//staged for added
+        List<String> removedList = new ArrayList<>();//staged for removal
+        Map<String, String> finalFilesMap = new HashMap<>();
         for (String fileName : allFiles) {
             if (spiltPointMap.containsKey(fileName)) { //spiltPoint里有
-                String spiltPointValue=spiltPointMap.get(fileName);
+                String spiltPointValue = spiltPointMap.get(fileName);
                 if (currentBranchMap.containsKey(fileName) && givenBranchMap.containsKey(fileName)) {//当前和given都有
-                    String currentValue=currentBranchMap.get(fileName);
-                    String givenValue=givenBranchMap.get(fileName);
-                    if(!currentValue.equals(spiltPointValue)&&!givenValue.equals(spiltPointValue)){//当前和given的修改与spilt都不一样
-                        mergeConflict(currentValue,givenValue);//合并冲突
-                        happenConflict=true;
+                    String currentValue = currentBranchMap.get(fileName);
+                    String givenValue = givenBranchMap.get(fileName);
+                    if (!currentValue.equals(spiltPointValue) && !givenValue.equals(spiltPointValue)) {//当前和given的修改与spilt都不一样
+                        mergeConflict(currentValue, givenValue);//合并冲突
+                        happenConflict = true;
                     } else if (!currentValue.equals(spiltPointValue)) {//当前的修改与spilt不一样
-                        finalFilesMap.put(fileName,currentValue);
+                        finalFilesMap.put(fileName, currentValue);
                     } else if (!givenValue.equals(spiltPointValue)) {//given的修改与spilt不一样
-                        finalFilesMap.put(fileName,givenValue);
+                        finalFilesMap.put(fileName, givenValue);
                     }
                 } else if (currentBranchMap.containsKey(fileName)) { //当前有（可能修改可能没有）
-                    String currentValue=currentBranchMap.get(fileName);
-                    if(currentValue.equals(spiltPointValue)){       //没有修改
+                    String currentValue = currentBranchMap.get(fileName);
+                    if (currentValue.equals(spiltPointValue)) {       //没有修改
                         removedList.add(fileName);
-                    }else{                                          //修改了
-                        mergeConflict(currentValue,null);//合并冲突
-                        happenConflict=true;
+                    } else {                                          //修改了
+                        mergeConflict(currentValue, null);//合并冲突
+                        happenConflict = true;
                     }
                 } else if (givenBranchMap.containsKey(fileName)) {//given有（可能修改可能没有）
-                    String givenValue=givenBranchMap.get(fileName);
-                    if(givenValue.equals(spiltPointValue)){         //没有修改
+                    String givenValue = givenBranchMap.get(fileName);
+                    if (givenValue.equals(spiltPointValue)) {         //没有修改
 
-                }else{                                              //修改了
-                        mergeConflict(null,givenValue);//合并冲突
-                        happenConflict=true;
+                    } else {                                              //修改了
+                        mergeConflict(null, givenValue);//合并冲突
+                        happenConflict = true;
                     }
                 } else {
                     removedList.add(fileName);
                 }
             } else { //spiltPoint里没有
                 if (currentBranchMap.containsKey(fileName) && givenBranchMap.containsKey(fileName)) {//当前和given都修改过/都有
-                    String currentValue=currentBranchMap.get(fileName);
-                    String givenValue=givenBranchMap.get(fileName);
-                    if(currentValue.equals(givenValue)){ //修改一致
-                        finalFilesMap.put(fileName,currentValue);
-                    }else{ //修改不一致
-                        mergeConflict(currentValue,givenValue);//合并冲突
-                        happenConflict=true;
+                    String currentValue = currentBranchMap.get(fileName);
+                    String givenValue = givenBranchMap.get(fileName);
+                    if (currentValue.equals(givenValue)) { //修改一致
+                        finalFilesMap.put(fileName, currentValue);
+                    } else { //修改不一致
+                        mergeConflict(currentValue, givenValue);//合并冲突
+                        happenConflict = true;
                     }
                 } else if (currentBranchMap.containsKey(fileName)) {//当前修改过/有
-                    finalFilesMap.put(fileName,currentBranchMap.get(fileName));
+                    finalFilesMap.put(fileName, currentBranchMap.get(fileName));
                 } else if (givenBranchMap.containsKey(fileName)) {//given修改过/有（添加进ADDED_DIR）
-                    finalFilesMap.put(fileName,givenBranchMap.get(fileName));
+                    finalFilesMap.put(fileName, givenBranchMap.get(fileName));
                     addedList.add(fileName);
                 } else {
                     //都没有修改/都没有，略过
@@ -94,42 +94,44 @@ public class Merge {
         }
 
         setTheCWDFiles(finalFilesMap);
-        stagedFiles(addedList,removedList);
+        stagedFiles(addedList, removedList);
         return happenConflict;
     }
 
     /**
      * 依据Map替换CWD里面的全部文件
-     * */
-    private static void setTheCWDFiles(Map <String,String> map){
+     */
+    private static void setTheCWDFiles(Map<String, String> map) {
         Utils.cleanDic(CWD);
         Utils.copyFromSource(map, CWD, BLOBS_DIR);
     }
+
     /**
      * 依据addedList添加ADDED_DIR里面的文件，依据removedList添加REMOVED_DIR里面的文件
-     * */
-    private static void stagedFiles(List <String> addList,List<String> removedList){
-        copyFilesFromCWD(addList,ADDED_DIR);
-        copyFilesFromCWD(removedList,REMOVED_DIR);
+     */
+    private static void stagedFiles(List<String> addList, List<String> removedList) {
+        copyFilesFromCWD(addList, ADDED_DIR);
+        copyFilesFromCWD(removedList, REMOVED_DIR);
     }
-    private static void copyFilesFromCWD(List <String> list,File targetPath){
-        for (String fileName:list) {
-            File file =Utils.join(CWD,fileName);
-            File targetFile=Utils.join(ADDED_DIR,fileName);
+
+    private static void copyFilesFromCWD(List<String> list, File targetPath) {
+        for (String fileName : list) {
+            File file = Utils.join(CWD, fileName);
+            File targetFile = Utils.join(ADDED_DIR, fileName);
             try {
-                Files.copy(file.toPath(),targetFile.toPath(),StandardCopyOption.COPY_ATTRIBUTES);
+                Files.copy(file.toPath(), targetFile.toPath(), StandardCopyOption.COPY_ATTRIBUTES);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
     }
 
-    private static void mergeConflict(String headSHA1,String givenSHA1){
-        File headFile=headSHA1!=null?Utils.join(BLOBS_DIR,headSHA1):null;
-        File givenFile=givenSHA1!=null?Utils.join(BLOBS_DIR,givenSHA1):null;
+    private static void mergeConflict(String headSHA1, String givenSHA1) {
+        File headFile = headSHA1 != null ? Utils.join(BLOBS_DIR, headSHA1) : null;
+        File givenFile = givenSHA1 != null ? Utils.join(BLOBS_DIR, givenSHA1) : null;
 
-        String headString=headFile!=null?Utils.readContentsAsString(headFile):"";
-        String givenString=givenFile!=null?Utils.readContentsAsString(givenFile):"";
+        String headString = headFile != null ? Utils.readContentsAsString(headFile) : "";
+        String givenString = givenFile != null ? Utils.readContentsAsString(givenFile) : "";
 
         System.out.println("<<<<<<< HEAD");
         System.out.println(headString);

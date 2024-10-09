@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  * 对gitlet初始化
- * */
+ */
 public class Init {
     /**
      * .gitlet文件夹
@@ -29,9 +29,9 @@ public class Init {
     private static final File COMMITS_DIR = Repository.COMMITS_DIR;
     /**
      * 用于存储各个branch的引用
-     * */
-    private static final File REFS_DIR=Repository.REFS_DIR;
-    private static final File CURRENT_DIR=Repository.CURRENT_DIR;
+     */
+    private static final File REFS_DIR = Repository.REFS_DIR;
+    private static final File CURRENT_DIR = Repository.CURRENT_DIR;
 
     /**
      * 创建所有需要的文件夹
@@ -48,16 +48,17 @@ public class Init {
         ADDED_DIR.mkdir(); //STAGED_DIR文件夹下
         REMOVED_DIR.mkdir();
     }
+
     /**
-    * 设置当前所在分支
-    * */
-    public static void setDefault(){
-        if(!GITLET_DIR.exists())return;
-        List<String> branchNames=Utils.plainFilenamesIn(REFS_DIR);
-        String currentBranch=Utils.plainFilenamesIn(CURRENT_DIR).get(0);
-        for (String branchName:branchNames) {
-            if(branchName.equals(currentBranch)){
-                Repository.currentBranch=branchName;
+     * 设置当前所在分支
+     */
+    public static void setDefault() {
+        if (!GITLET_DIR.exists()) return;
+        List<String> branchNames = Utils.plainFilenamesIn(REFS_DIR);
+        String currentBranch = Utils.plainFilenamesIn(CURRENT_DIR).get(0);
+        for (String branchName : branchNames) {
+            if (branchName.equals(currentBranch)) {
+                Repository.currentBranch = branchName;
                 return;
             }
         }

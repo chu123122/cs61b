@@ -7,9 +7,9 @@ import java.util.List;
 
 public class Status {
 
-    private static final File CWD=Repository.CWD;
+    private static final File CWD = Repository.CWD;
     private static final File ADDED_DIR = Repository.ADDED_DIR;
-    private static final File REFS_DIR=Repository.REFS_DIR;
+    private static final File REFS_DIR = Repository.REFS_DIR;
     private static final File REMOVED_DIR = Repository.REMOVED_DIR;
 
     public static void printBranches() {
@@ -17,7 +17,7 @@ public class Status {
         List<String> fileNamesInDir = Utils.plainFilenamesIn(REFS_DIR);
         Collections.sort(fileNamesInDir);
         for (String name : fileNamesInDir) {
-            if(name.equals(Repository.currentBranch))
+            if (name.equals(Repository.currentBranch))
                 System.out.print("*");
             System.out.println(name);
         }
@@ -53,18 +53,19 @@ public class Status {
         System.out.println();
     }
 
-    private static List<String> getModifiedFiles(){
-        List<String> fileNamesInMod=new ArrayList<>();
+    private static List<String> getModifiedFiles() {
+        List<String> fileNamesInMod = new ArrayList<>();
 
         return fileNamesInMod;
     }
-    private static List<String> getDeleteFiles(){
-        List<String> fileNamesInDel=new ArrayList<>();
-        List<String> fileNamesInADD=Utils.plainFilenamesIn(ADDED_DIR);
-        List<String> fileNamesInCWD=Utils.plainFilenamesIn(CWD);
-        for (String fileName:fileNamesInADD) {              //对于添加到added文件夹后又在CWD中删除的文件
-            if(!fileNamesInCWD.contains(fileName)){
-                fileNamesInDel.add(fileName+" (deleted)");
+
+    private static List<String> getDeleteFiles() {
+        List<String> fileNamesInDel = new ArrayList<>();
+        List<String> fileNamesInADD = Utils.plainFilenamesIn(ADDED_DIR);
+        List<String> fileNamesInCWD = Utils.plainFilenamesIn(CWD);
+        for (String fileName : fileNamesInADD) {              //对于添加到added文件夹后又在CWD中删除的文件
+            if (!fileNamesInCWD.contains(fileName)) {
+                fileNamesInDel.add(fileName + " (deleted)");
             }
         }
         return fileNamesInDel;

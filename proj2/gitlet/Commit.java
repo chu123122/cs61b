@@ -164,7 +164,7 @@ public class Commit implements Serializable {
      */
     public static Commit getHEAD() {
         File headFile = Utils.join(COMMITS_DIR, HEAD);
-        Commit HEAD=Utils.readObject(headFile, Commit.class);
+        Commit HEAD = Utils.readObject(headFile, Commit.class);
         return HEAD;
     }
 
@@ -205,10 +205,10 @@ public class Commit implements Serializable {
         else {
             //TODO:记得删除多余的
             File file = Utils.join(CWD, fileName);
-            File file1=Utils.join(BLOBS_DIR,map.get(fileName));
-            String string0=Utils.readContentsAsString(file1);
-            String string1=Utils.readContentsAsString(file);
-            String sha0=map.get(fileName);
+            File file1 = Utils.join(BLOBS_DIR, map.get(fileName));
+            String string0 = Utils.readContentsAsString(file1);
+            String string1 = Utils.readContentsAsString(file);
+            String sha0 = map.get(fileName);
             String sha1 = Utils.sha1(string1);
             return sha1.equals(map.get(fileName));//如果blobs中不含有SHA1码相同的文件
         }

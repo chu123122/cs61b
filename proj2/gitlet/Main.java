@@ -17,68 +17,58 @@ public class Main {
         // TODO: what if args is empty?
         Init.setDefault();
         String firstArg = args[0];
-        int lenth=args.length;
 
         switch (firstArg) {
-            case "init":
-                Repository.setupPersistence();
-                break;
-            case "add":
+            case "init" -> Repository.setupPersistence();
+            case "add" -> {
                 String fileName = args[1];
                 Repository.addGitLet(fileName);
-                break;
-            case "commit":
+            }
+            case "commit" -> {
                 String message = args[1];
                 Repository.commitGitLet(message);
-                break;
-            case "checkout":
-                if(args.length==3){
-                    Repository.checkOutGitLet("HEAD",args[2]);
-                } else if (args.length==4) {
-                    Repository.checkOutGitLet(args[1],args[3]);
-                }else if(args.length==2){
+            }
+            case "checkout" -> {
+                if (args.length == 3) {
+                    Repository.checkOutGitLet("HEAD", args[2]);
+                } else if (args.length == 4) {
+                    Repository.checkOutGitLet(args[1], args[3]);
+                } else if (args.length == 2) {
                     Repository.checkOutGitLet(args[1]);
                 }
-                break;
-            case "log":
-                Repository.logGitLet();
-                break;
-            case "global-log":
-                Repository.globalLogGitLet();
-                break;
-            case "rm":
-                String name=args[1];
+            }
+            case "log" -> Repository.logGitLet();
+            case "global-log" -> Repository.globalLogGitLet();
+            case "rm" -> {
+                String name = args[1];
                 Repository.rmGitLet(name);
-                break;
-            case "find":
-                String findMessage=args[1];
+            }
+            case "find" -> {
+                String findMessage = args[1];
                 Repository.findGitLet(findMessage);
-                break;
-            case "branch":
-                String crBranchName=args[1];
+            }
+            case "branch" -> {
+                String crBranchName = args[1];
                 Repository.branchGitLet(crBranchName);
-                break;
-            case "rm-branch":
-                String rmBranchName=args[1];
+            }
+            case "rm-branch" -> {
+                String rmBranchName = args[1];
                 Repository.rmBranchGitLet(rmBranchName);
-                break;
-            case "status":
-                Repository.statusGitLet();
-                break;
-            case "reset":
-                String resetCommitId=args[1];
+            }
+            case "status" -> Repository.statusGitLet();
+            case "reset" -> {
+                String resetCommitId = args[1];
                 Repository.reSetGitLet(resetCommitId);
-                break;
-            case "merge":
-                String mergeBranchName=args[1];
+            }
+            case "merge" -> {
+                String mergeBranchName = args[1];
                 Repository.mergeGitLet(mergeBranchName);
-                break;
-
-            case "checkWug":
-                Commit HEAD= Commit.getHEAD();
-                String sha1=HEAD.blobs().get("wug.txt");
+            }
+            case "checkWug" -> {
+                Commit HEAD = Commit.getHEAD();
+                String sha1 = HEAD.blobs().get("wug.txt");
                 System.out.println(sha1);
-                break;
+            }
         }
         return;
     }
