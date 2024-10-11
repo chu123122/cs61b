@@ -69,7 +69,7 @@ public class Repository {
     public static void setupPersistence() {
         boolean hasInit = GITLET_DIR.exists();
         if (hasInit) {
-            message("A Gitlet version-control system already exists in the current directory.");
+            Utils.message("A Gitlet version-control system already exists in the current directory.");
             return;
         }
         //初始化文件夹
@@ -88,6 +88,11 @@ public class Repository {
      * add指令对应方法
      */
     public static void addGitLet(String fileName) {
+        if (!GITLET_DIR.exists()) {
+            Utils.message("Not in an initialized Gitlet directory.");
+            return;
+        }
+
         List<String> cwdDic = plainFilenamesIn(CWD);
         if (!cwdDic.contains(fileName)) {
             message("File does not exist.");
@@ -101,7 +106,10 @@ public class Repository {
      * commit指令对应方法
      */
     public static void commitGitLet(String message) {
-        if (message == null || message.equals("")) {
+        if (!GITLET_DIR.exists()) {
+            Utils.message("Not in an initialized Gitlet directory.");
+            return;
+        } else if (message == null || message.equals("")) {
             Utils.message("Please enter a commit message.");
             return;
         } else if (dirIsEmpty(ADDED_DIR) && dirIsEmpty(REMOVED_DIR)) {
@@ -124,6 +132,10 @@ public class Repository {
      * checkout指令对应方法(文件)
      */
     public static void checkOutGitLet(String commitId, String fileName) {
+        if (!GITLET_DIR.exists()) {
+            Utils.message("Not in an initialized Gitlet directory.");
+            return;
+        }
         Commit commit = Commit.findCommitOrBranch(commitId);
         if (commit == null) {
             Utils.message("No commit with that id exists.");
@@ -143,7 +155,10 @@ public class Repository {
      * checkout指令对应方法(分支)
      */
     public static void checkOutGitLet(String branchName) {
-        if (!Branch.haveTheBranch(branchName)) {
+        if (!GITLET_DIR.exists()) {
+            Utils.message("Not in an initialized Gitlet directory.");
+            return;
+        } else if (!Branch.haveTheBranch(branchName)) {
             Utils.message("No such branch exists.");
             return;
         } else if (branchName.equals(currentBranch)) {
@@ -158,14 +173,28 @@ public class Repository {
     }
 
     public static void logGitLet() {
+        if (!GITLET_DIR.exists()) {
+            Utils.message("Not in an initialized Gitlet directory.");
+            return;
+        }
+
         Log.log();
     }
 
     public static void globalLogGitLet() {
+        if (!GITLET_DIR.exists()) {
+            Utils.message("Not in an initialized Gitlet directory.");
+            return;
+        }
+
         Log.globalLog();
     }
 
     public static void rmGitLet(String fileName) {
+        if (!GITLET_DIR.exists()) {
+            Utils.message("Not in an initialized Gitlet directory.");
+            return;
+        }
         List<String> fileNameInAdded = Utils.plainFilenamesIn(ADDED_DIR);
         assert fileNameInAdded != null;
         for (String name : fileNameInAdded) {
@@ -185,6 +214,10 @@ public class Repository {
     }
 
     public static void findGitLet(String message) {
+        if (!GITLET_DIR.exists()) {
+            Utils.message("Not in an initialized Gitlet directory.");
+            return;
+        }
         List<String> commitsSHA1 = Find.findTheCommitsSHA1(message);
         if (commitsSHA1.size() == 0) {
             Utils.message("Found no commit with that message.");
@@ -196,17 +229,21 @@ public class Repository {
     }
 
     public static void branchGitLet(String name) {
+        if (!GITLET_DIR.exists()) {
+            Utils.message("Not in an initialized Gitlet directory.");
+            return;
+        }
         Branch.createNewBranch(name);
     }
 
     public static void rmBranchGitLet(String name) {
-        //如果删除的分支是当前分支，返回
-        if (currentBranch.equals(name)) {
+        if (!GITLET_DIR.exists()) {
+            Utils.message("Not in an initialized Gitlet directory.");
+            return;
+        } else if (currentBranch.equals(name)) {  //如果删除的分支是当前分支，返回
             Utils.message("Cannot remove the current branch.");
             return;
-        }
-        //如果删除的分支不存在，返回
-        if (!Branch.haveTheBranch(name)) {
+        } else if (!Branch.haveTheBranch(name)) { //如果删除的分支不存在，返回
             Utils.message("A branch with that name does not exist.");
             return;
         }
@@ -214,6 +251,10 @@ public class Repository {
     }
 
     public static void statusGitLet() {
+        if (!GITLET_DIR.exists()) {
+            Utils.message("Not in an initialized Gitlet directory.");
+            return;
+        }
         Status.printBranches();
         Status.printStaged();
         Status.printRemoved();
@@ -223,11 +264,13 @@ public class Repository {
     }
 
     public static void reSetGitLet(String commitId) {
-        if (!Commit.checkHaveTheCommit(commitId)) {
+        if (!GITLET_DIR.exists()) {
+            Utils.message("Not in an initialized Gitlet directory.");
+            return;
+        } else if (!Commit.checkHaveTheCommit(commitId)) {
             Utils.message("No commit with that id exists.");
             return;
-        }
-        if (haveChangeAndUntrackedFile(commitId)) {
+        } else if (haveChangeAndUntrackedFile(commitId)) {
             Utils.message("There is an untracked file in the way; delete it, or add and commit it first.");
             return;
         }
@@ -239,7 +282,10 @@ public class Repository {
 
 
     public static void mergeGitLet(String givenBranchName) {
-        if (dirIsEmpty(ADDED_DIR) && dirIsEmpty(REMOVED_DIR)) {
+        if (!GITLET_DIR.exists()) {
+            Utils.message("Not in an initialized Gitlet directory.");
+            return;
+        } else if (dirIsEmpty(ADDED_DIR) && dirIsEmpty(REMOVED_DIR)) {
             Utils.message("You have uncommitted changes.");
             return;
         } else if (Branch.haveTheBranch(givenBranchName)) {
@@ -271,24 +317,25 @@ public class Repository {
 
     /**
      * 检测HEAD里是否有追踪该文件,如果未追踪，检查切换到的commit是否会修改该文件
-     * */
+     */
     private static boolean haveChangeAndUntrackedFile(String target) {
-        Commit targetCommit=Commit.findCommitOrBranch(target);
+        Commit targetCommit = Commit.findCommitOrBranch(target);
 
-        List<String> unStuckFilesInCWD= getUnStuckFilesInCWD();
-        for (String fileName:unStuckFilesInCWD) {
+        List<String> unStuckFilesInCWD = getUnStuckFilesInCWD();
+        for (String fileName : unStuckFilesInCWD) {
             //被修改的情况：1.被删除，targetCommit的Blobs里不含有该文件；2被修改，含有，但是SHA1码不一样。
-            if(Commit.checkTheUnstuckWillBeOverride(fileName,targetCommit)){
+            if (Commit.checkTheUnstuckWillBeOverride(fileName, targetCommit)) {
                 return true;
             }
         }
         return false;
     }
-    private static List<String> getUnStuckFilesInCWD(){
+
+    private static List<String> getUnStuckFilesInCWD() {
         List<String> filesInCWD = Utils.plainFilenamesIn(CWD);
-        List<String> unStuckFiles=new ArrayList<>();
-        for (String fileName:filesInCWD) {
-            if(!Commit.checkHaveTheSameFile(fileName,Commit.getHEAD())){
+        List<String> unStuckFiles = new ArrayList<>();
+        for (String fileName : filesInCWD) {
+            if (!Commit.checkHaveTheSameFile(fileName, Commit.getHEAD())) {
                 unStuckFiles.add(fileName);
             }
         }

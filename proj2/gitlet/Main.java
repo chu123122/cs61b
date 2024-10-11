@@ -9,12 +9,17 @@ package gitlet;
 public class Main {
 
 
+
     /**
      * Usage: java gitlet.Main ARGS, where ARGS contains
      * <COMMAND> <OPERAND1> <OPERAND2> ...
      */
     public static void main(String[] args) {
         // TODO: what if args is empty?
+        if(args.length==0){
+            Utils.message("Please enter a command.");
+            return;
+        }
         Init.setDefault();
         String firstArg = args[0];
 
@@ -64,10 +69,8 @@ public class Main {
                 String mergeBranchName = args[1];
                 Repository.mergeGitLet(mergeBranchName);
             }
-            case "checkWug" -> {
-                Commit HEAD = Commit.getHEAD();
-                String sha1 = HEAD.blobs().get("wug.txt");
-                System.out.println(sha1);
+            default -> {
+                Utils.message("No command with that name exists.");
             }
         }
         return;
