@@ -119,6 +119,70 @@
 
 #### Field
 
+1. `private static final File CWD` 
+
+2. `private static final File ADD_DIR` 
+
+3. `private static final File REMOVED_DIR` 
+
+4. `private static final File BLOBS_DIR` 
+
+---
+
+#### Reset
+
+#### Field
+
+1. `private static final File CWD` 
+
+2. `private static final File COMMITS_DIR` 
+
+3. `private static final File BLOBS_DIR` 
+
+4. `private static final String HEAD` 
+
+---
+
+#### Status
+
+#### Field
+
+1. `private static final File CWD` 
+
+2. `private static final File ADDED_DIR` 
+
+3. `private static final File REFS_DIR` 
+
+4. `private static final File REMOVED_DIR` 
+
+---
+
+#### Branch
+
+#### Field
+
+1. `private static final File REFS_DIR` 
+
+2. `private static final File COMMITS_DIR` 
+
+3. `private static final String HEAD` 
+
+----
+
+#### Merge
+
+#### Field
+
+1. `private static final File CWD`
+
+2. `private static final File ADDED_DIR`
+
+3. `private static final File REMOVED_DIR`
+
+4. `private static final File REFS_DIR`
+
+5. `private static final File BLOBS_DIR`
+
 ---
 
 ## Algorithms
@@ -150,3 +214,7 @@ commit -----序列化一个commit文件到`commits`里面
 3. commit，复制上一个commit（仅`blobs` 相同），提交时更新`blobs` （从`staged` 文件夹里查询所有与`bolos` key相同的文件，更新其sha1码，从而可以获取到其在`blobs` 里的sha1码名称的文件存储）将其序列化写入用其sha1码为名的文件中存储到`commits`文件夹里。每次提交时更新当前分支的最新引用。（通过对比HEAD和引用的`SHA1` 码从而确定）
    
       ***问题：如果修改了文件的名称，文件原版本和改名版本都会在中commit存在***
+
+
+
+问题：检查文件是否会被当前操作修改：checkout，reset，merge

@@ -4,8 +4,10 @@ import java.io.File;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import static gitlet.Utils.*;
 
@@ -56,6 +58,7 @@ public class Repository {
     public static final File REFS_DIR = Utils.join(COMMITS_DIR, "refs");
     public static final File CURRENT_DIR = Utils.join(REFS_DIR, "current");
 
+    public static final String HEAD = "HEAD";
     public static String currentBranch = "";
 
     /* TODO: fill in the rest of this class. */
@@ -121,7 +124,7 @@ public class Repository {
      * checkout指令对应方法(文件)
      */
     public static void checkOutGitLet(String commitId, String fileName) {
-        Commit commit = Commit.findCommitWithName(commitId);
+        Commit commit = Commit.findCommitOrBranch(commitId);
         if (commit == null) {
             Utils.message("No commit with that id exists.");
             return;
@@ -146,7 +149,7 @@ public class Repository {
         } else if (branchName.equals(currentBranch)) {
             Utils.message("No need to checkout the current branch.");
             return;
-        } else if (haveUntrackedFile()) {
+        } else if (haveChangeAndUntrackedFile(branchName)) {
             Utils.message("There is an untracked file in the way; delete it, or add and commit it first.");
             return;
         }
@@ -224,7 +227,7 @@ public class Repository {
             Utils.message("No commit with that id exists.");
             return;
         }
-        if (haveUntrackedFile()) {
+        if (haveChangeAndUntrackedFile(commitId)) {
             Utils.message("There is an untracked file in the way; delete it, or add and commit it first.");
             return;
         }
@@ -245,7 +248,7 @@ public class Repository {
         } else if (givenBranchName.equals(currentBranch)) {
             Utils.message("Cannot merge a branch with itself.");
             return;
-        } else if (haveUntrackedFile()) {
+        } else if (haveChangeAndUntrackedFile(givenBranchName)) {
             Utils.message("There is an untracked file in the way; delete it, or add and commit it first.");
             return;
         }
@@ -266,19 +269,32 @@ public class Repository {
         if (conflict) Utils.message("Encountered a merge conflict.");
     }
 
-    private static boolean haveUntrackedFile() {
-        List<String> filesInCWD = Utils.plainFilenamesIn(CWD);
-        List<String> filesInREMOVED = Utils.plainFilenamesIn(REMOVED_DIR);
-        List<String> filesInADDED = Utils.plainFilenamesIn(ADDED_DIR);
-        for (String name : filesInCWD) {
-            if (!filesInADDED.contains(name) && !filesInREMOVED.contains(name)) {   //文件未追踪
-                if (!Commit.checkHaveTheFileInHEAD(name)) {                       //文件在目标提交中未拥有
-                    return true;
-                }
+    /**
+     * 检测HEAD里是否有追踪该文件,如果未追踪，检查切换到的commit是否会修改该文件
+     * */
+    private static boolean haveChangeAndUntrackedFile(String target) {
+        Commit targetCommit=Commit.findCommitOrBranch(target);
+
+        List<String> unStuckFilesInCWD= getUnStuckFilesInCWD();
+        for (String fileName:unStuckFilesInCWD) {
+            //被修改的情况：1.被删除，targetCommit的Blobs里不含有该文件；2被修改，含有，但是SHA1码不一样。
+            if(Commit.checkTheUnstuckWillBeOverride(fileName,targetCommit)){
+                return true;
             }
         }
         return false;
     }
+    private static List<String> getUnStuckFilesInCWD(){
+        List<String> filesInCWD = Utils.plainFilenamesIn(CWD);
+        List<String> unStuckFiles=new ArrayList<>();
+        for (String fileName:filesInCWD) {
+            if(!Commit.checkHaveTheSameFile(fileName,Commit.getHEAD())){
+                unStuckFiles.add(fileName);
+            }
+        }
+        return unStuckFiles;
+    }
+
 
     private static boolean dirIsEmpty(File dir) {
         List<String> filesInAdded = Utils.plainFilenamesIn(dir);

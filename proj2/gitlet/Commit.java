@@ -111,6 +111,68 @@ public class Commit implements Serializable {
     }
 
     /**
+     * 返回一个blobs继承自HEAD的commit
+     */
+    public static Commit getNewFromHEAD(String message, String timeScale) {
+        File HEADFile = Utils.join(COMMITS_DIR, HEAD);
+        Commit HEAD = Utils.readObject(HEADFile, Commit.class);
+        return new Commit(message, timeScale, HEAD.SHA1());
+    }
+
+    /**
+     * 返回HEAD（Commit）
+     */
+    public static Commit getHEAD() {
+        File headFile = Utils.join(COMMITS_DIR, HEAD);
+        Commit HEAD = Utils.readObject(headFile, Commit.class);
+        return HEAD;
+    }
+
+
+    public static Commit findCommitOrBranch(String target) {
+        Commit commit = findCommitWithSHA1(target);
+        if (commit == null) commit = findBranchWithName(target);
+        return commit;
+    }
+
+
+    /**
+     * 检查COMIMITS_DIR文件夹里面是否有特定提交
+     */
+    public static boolean checkHaveTheCommit(String commitId) {
+        List<String> filesInCOMMITS = Utils.plainFilenamesIn(COMMITS_DIR);
+        for (String name : filesInCOMMITS) {
+            if (name.equals(commitId)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 依据基于CWD目标的fileName检查对应Commit中是否有特定的文件（检查名称和SHA1码）
+     */
+    public static boolean checkHaveTheSameFile(String fileName, Commit commit) {
+        Map<String, String> map = commit.blobs();
+        if (!map.containsKey(fileName)) return false;//如果blobs中不含有该文件
+        else {
+            File file = Utils.join(CWD, fileName);
+            String sha1 = Utils.sha1(Utils.readContentsAsString(file));
+            return sha1.equals(map.get(fileName));//如果blobs中不含有SHA1码相同的文件
+        }
+    }
+
+    public static boolean checkTheUnstuckWillBeOverride(String fileName, Commit commit){
+        Map<String, String> map = commit.blobs();
+        if (!map.containsKey(fileName)) return true;//被删除
+        else{
+            File file = Utils.join(CWD, fileName);
+            String sha1 = Utils.sha1(Utils.readContentsAsString(file));
+            return !sha1.equals(map.get(fileName));//相同返回false，不同证明被修改返回true
+        }
+    }
+
+    /**
      * 更新HEAD指针的文件的引用（文件名不变化，依旧HEAD）
      */
     private static void setTheHEAD(File commit) {
@@ -150,32 +212,15 @@ public class Commit implements Serializable {
         }
     }
 
-    /**
-     * 返回一个blobs继承自HEAD的commit
-     */
-    public static Commit getNewFromHEAD(String message, String timeScale) {
-        File HEADFile = Utils.join(COMMITS_DIR, HEAD);
-        Commit HEAD = Utils.readObject(HEADFile, Commit.class);
-        return new Commit(message, timeScale, HEAD.SHA1());
-    }
-
-    /**
-     * 返回HEAD（Commit）
-     */
-    public static Commit getHEAD() {
-        File headFile = Utils.join(COMMITS_DIR, HEAD);
-        Commit HEAD = Utils.readObject(headFile, Commit.class);
-        return HEAD;
-    }
 
     /**
      * 从COMMITS_DIR文件夹里依据SHA1码查找提交
      */
-    public static Commit findCommitWithName(String commitId) {
+    private static Commit findCommitWithSHA1(String commitSHA1) {
         List<String> commitIds = Utils.plainFilenamesIn(COMMITS_DIR);
         for (String sha1 : commitIds) {
-            if (sha1.equals(commitId)) {
-                File commit = Utils.join(COMMITS_DIR, commitId);
+            if (sha1.equals(commitSHA1)) {
+                File commit = Utils.join(COMMITS_DIR, commitSHA1);
                 return Utils.readObject(commit, Commit.class);
             }
         }
@@ -183,35 +228,17 @@ public class Commit implements Serializable {
     }
 
     /**
-     * 检查COMIMITS_DIR文件夹里面是否有特定提交
+     * 从Refs_DIR文件夹里依据分支名码查找提交
      */
-    public static boolean checkHaveTheCommit(String commitId) {
-        List<String> filesInCOMMITS = Utils.plainFilenamesIn(COMMITS_DIR);
-        for (String name : filesInCOMMITS) {
-            if (name.equals(commitId)) {
-                return true;
+    private static Commit findBranchWithName(String branchName) {
+        List<String> branchNames = Utils.plainFilenamesIn(REFS_DIR);
+        for (String name : branchNames) {
+            if (name.equals(branchName)) {
+                File commit = Utils.join(REFS_DIR, branchName);
+                return Utils.readObject(commit, Commit.class);
             }
         }
-        return false;
-    }
-
-    /**
-     * 检查HEAD中是否有特定的文件
-     */
-    public static boolean checkHaveTheFileInHEAD(String fileName) {
-        Commit HEAD = getHEAD();
-        Map<String, String> map = HEAD.blobs();
-        if (!map.containsKey(fileName)) return false;//如果blobs中不含有该文件
-        else {
-            //TODO:记得删除多余的
-            File file = Utils.join(CWD, fileName);
-            File file1 = Utils.join(BLOBS_DIR, map.get(fileName));
-            String string0 = Utils.readContentsAsString(file1);
-            String string1 = Utils.readContentsAsString(file);
-            String sha0 = map.get(fileName);
-            String sha1 = Utils.sha1(string1);
-            return sha1.equals(map.get(fileName));//如果blobs中不含有SHA1码相同的文件
-        }
+        return null;
     }
 
     public Commit parent() {
