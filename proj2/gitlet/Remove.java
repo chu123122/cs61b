@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
+/**
+ *
+ * */
 public class Remove {
     private static final File CWD = Repository.CWD;
     private static final File ADD_DIR = Repository.ADDED_DIR;
@@ -15,9 +18,9 @@ public class Remove {
     /**
      * 将目标文件从ADD_DIR文件夹里面删除
      */
-    public static void unStagedFile(String fileName) {
-        File stagedFile = Utils.join(ADD_DIR, fileName);
-        stagedFile.delete();
+    public static void unStagedAddedFile(String fileName) {
+        File addedFile = Utils.join(ADD_DIR, fileName);
+        addedFile.delete();
     }
 
     /**
@@ -36,10 +39,12 @@ public class Remove {
     }
 
     /**
-     * 删除在CWD的目标文件
+     * 删除在CWD的目标文件（如何还存在）
      */
     public static void deleteCWDFile(String fileName) {
         File cwdFile = Utils.join(CWD, fileName);
-        cwdFile.delete();
+        if(cwdFile.exists()) {
+            cwdFile.delete();
+        }
     }
 }

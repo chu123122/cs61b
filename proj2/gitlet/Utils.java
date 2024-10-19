@@ -16,10 +16,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.StandardCopyOption;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
-import java.util.Formatter;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -288,6 +285,9 @@ class Utils {
         }
     }
 
+    /**
+     * 依据blobs里面的所有文件名，将其从source源文件夹复制到target目标文件夹
+     * */
     static void copyFromSource(Map<String, String> blobs, File target, File source) {
         for (String fileName : blobs.keySet()) {
             File file = Utils.join(target, fileName);
@@ -299,4 +299,20 @@ class Utils {
             }
         }
     }
+
+
+    /**
+     * 获取在CWD目录里未追踪的文件
+     * */
+    static List<String> getUnStuckFilesInCWD() {
+        List<String> filesInCWD = Utils.plainFilenamesIn(Repository.CWD);
+        List<String> unStuckFiles = new ArrayList<>();
+        for (String fileName : filesInCWD) {
+            if (!Commit.checkHaveTheSameFile(fileName, Commit.getHEAD())) {//破坏了单项依赖！
+                unStuckFiles.add(fileName);
+            }
+        }
+        return unStuckFiles;
+    }
+
 }

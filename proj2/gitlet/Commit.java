@@ -36,8 +36,8 @@ public class Commit implements Serializable {
      * staged的总文件夹
      */
     private static final File ADDED_DIR = Repository.ADDED_DIR;
+    private static final File REMOVED_DIR = Repository.REMOVED_DIR;
     private static final File BLOBS_DIR = Repository.BLOBS_DIR;
-
     private static final File REFS_DIR = Repository.REFS_DIR;
     /**
      * 提交链的HEAD指针（当前指针）
@@ -91,8 +91,8 @@ public class Commit implements Serializable {
      */
     public void submitCommit() {
         refreshBlobs();//更新Blobs的引用
-        sha1 = Utils.sha1(this.toString());//更新SHA1的引用
 
+        sha1 = Utils.sha1(this.toString());//更新SHA1的引用
         File commit = Utils.join(COMMITS_DIR, sha1);
 
         Utils.writeObject(commit, this);
@@ -199,19 +199,23 @@ public class Commit implements Serializable {
     }
 
     /**
-     * 依据staged里的文件更新当前commit的blobs引用，已存在的更新，不存在的添加
+     * 依据staged(add区域和removed区域)里的文件更新当前commit的blobs引用，已存在的更新，不存在的添加
      */
     private void refreshBlobs() {
-        List<String> keys = Utils.plainFilenamesIn(ADDED_DIR);//staged文件夹里add的文件
-        if (keys == null) throw new RuntimeException("staged don't have the target files");
-        for (String key : keys) {
-            File originFile = Utils.join(Repository.CWD, key);
+        List<String> filenamesInADDED = Utils.plainFilenamesIn(ADDED_DIR);//staged文件夹里add的文件
+        for (String addFile : filenamesInADDED) {
+            File originFile = Utils.join(CWD, addFile);
             String sha1 = Utils.sha1(Utils.readContentsAsString(originFile));
-            if (blobs.containsKey(key)) blobs.replace(key, sha1);//如果存在则更新，反之添加
-            else blobs.put(key, sha1);
+            if (blobs.containsKey(addFile)) blobs.replace(addFile, sha1);//如果存在则更新，反之添加
+            else blobs.put(addFile, sha1);
         }
-    }
 
+        List<String> filenamesInREMOVED = Utils.plainFilenamesIn(REMOVED_DIR);//staged文件夹里removed的文件
+        for (String removedFile:filenamesInREMOVED) {
+            blobs.remove(removedFile);//从blobs里面删除
+        }
+
+    }
 
     /**
      * 从COMMITS_DIR文件夹里依据SHA1码查找提交

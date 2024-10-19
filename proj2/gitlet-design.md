@@ -215,6 +215,20 @@ commit -----序列化一个commit文件到`commits`里面
    
       ***问题：如果修改了文件的名称，文件原版本和改名版本都会在中commit存在***
 
+问题：1. merge        2. status      3. short SHA1    4.global-log
 
+Modifid：
 
-问题：检查文件是否会被当前操作修改：checkout，reset，merge
+1. 被HEAD追踪但是在CWD修改后未staged
+
+2. 添加`Staged for addition` 后被在CWD删除
+
+3. 添加`Staged for addition` 后被在CWD修改
+
+4. 未删除`Not staged for removal` ，但被HEAD追踪且被在CWD删除
+
+   Untrucked：（忽略子文件夹）
+
+1. 文件在CWD但是既没添加`staged for addition`又没被HEAD追踪
+
+2. 文件`staged for removal` 被标记为删除后，未经过gitlet重新创建

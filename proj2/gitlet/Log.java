@@ -1,10 +1,11 @@
 package gitlet;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ *
+ * */
 public class Log {
     //TODO:合并没实现
     public static Commit HEAD = Commit.getHEAD();

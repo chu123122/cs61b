@@ -4,14 +4,19 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.util.List;
 import java.util.Map;
 
+
+/**
+ *
+ * */
 public class CheckOut {
     private static final File CWD = Repository.CWD;
     private static final File BLOBS_DIR = Repository.BLOBS_DIR;
     private static final File REFS_DIR = Repository.REFS_DIR;
     private static final File CURRENT_DIR = Repository.CURRENT_DIR;
+    private static final File COMMITS_DIR = Repository.COMMITS_DIR;
+    private static String HEAD="HEAD";
 
     public static void checkOutFile(File sourceFile, File targetFile) {
         try {
@@ -26,8 +31,18 @@ public class CheckOut {
         setCurrentDir(branchName);
 
         copyFileFromBlobs(branchName);
+        setTheHEAD(branchName);
     }
 
+    private static void setTheHEAD(String branchName){
+        File headCommit = Utils.join(COMMITS_DIR, HEAD);
+        File branch =Utils.join(REFS_DIR, branchName);
+        try {
+            Files.copy(branch.toPath(), headCommit.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     private static void copyFileFromBlobs(String branchName) {
         Utils.cleanDic(CWD);

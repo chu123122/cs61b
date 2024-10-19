@@ -4,10 +4,8 @@ import java.io.File;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import static gitlet.Utils.*;
 
@@ -100,6 +98,7 @@ public class Repository {
         }
         File addFile = join(CWD, fileName);
         Add.addStageFile(addFile);
+        Add.deleteInREMOVED(fileName);
     }
 
     /**
@@ -196,21 +195,21 @@ public class Repository {
             return;
         }
         List<String> fileNameInAdded = Utils.plainFilenamesIn(ADDED_DIR);
-        assert fileNameInAdded != null;
         for (String name : fileNameInAdded) {
             //如果文件已经add
             if (name.equals(fileName)) {
-                Remove.unStagedFile(fileName);
+                Remove.unStagedAddedFile(fileName);
                 return;
             }
         }
         //检查是否在HEAD里被追踪
-        if (!Commit.getHEAD().blobs().containsKey(fileName)) {
+        if (!Commit.checkHaveTheSameFile(fileName,Commit.getHEAD())) {
             Utils.message("No reason to remove the file.");
             return;
         }
-        Remove.copyCWDToRemoval(fileName);
-        Remove.deleteCWDFile(fileName);
+
+        Remove.copyCWDToRemoval(fileName);//标记为待删除（在blobs里）
+        Remove.deleteCWDFile(fileName);//从CWD删除
     }
 
     public static void findGitLet(String message) {
@@ -330,18 +329,6 @@ public class Repository {
         }
         return false;
     }
-
-    private static List<String> getUnStuckFilesInCWD() {
-        List<String> filesInCWD = Utils.plainFilenamesIn(CWD);
-        List<String> unStuckFiles = new ArrayList<>();
-        for (String fileName : filesInCWD) {
-            if (!Commit.checkHaveTheSameFile(fileName, Commit.getHEAD())) {
-                unStuckFiles.add(fileName);
-            }
-        }
-        return unStuckFiles;
-    }
-
 
     private static boolean dirIsEmpty(File dir) {
         List<String> filesInAdded = Utils.plainFilenamesIn(dir);
